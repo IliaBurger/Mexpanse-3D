@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mexpanse · Бесплатные 3D модели</title>
+    <title>Mexpanse3D · Бесплатные 3D модели</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
@@ -25,7 +25,6 @@
             margin: 0 auto;
             padding: 0 24px;
         }
-        /* HEADER */
         .header {
             padding: 14px 0;
             border-bottom: 1px solid #e8e8e8;
@@ -151,7 +150,6 @@
         .admin-mode-badge.active {
             display: inline-block;
         }
-        /* HERO */
         .hero {
             padding: 44px 0 36px;
             text-align: center;
@@ -211,7 +209,6 @@
         .search-box button:hover {
             background: #0044cc;
         }
-        /* FILTERS */
         .filters {
             display: flex;
             flex-wrap: wrap;
@@ -254,7 +251,6 @@
         .filter-chip.add-btn:hover {
             background: #e6f0ff;
         }
-        /* GRID */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -383,7 +379,6 @@
         .btn-download.locked:hover {
             background: #ccc;
         }
-        /* Admin buttons on card */
         .card-admin-actions {
             position: absolute;
             top: 12px;
@@ -416,7 +411,6 @@
         .card-admin-actions .btn-delete:hover {
             background: #dc3545;
         }
-        /* FOOTER */
         .footer {
             border-top: 1px solid #eaeaea;
             padding: 32px 0 40px;
@@ -443,8 +437,6 @@
         .footer-links a:hover {
             color: #0057ff;
         }
-
-        /* MODALS */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -537,8 +529,6 @@
         .btn-cancel:hover {
             background: #e0e0e0;
         }
-
-        /* Preview modal */
         .preview-container {
             width: 100%;
             height: 300px;
@@ -568,8 +558,6 @@
         .preview-info p {
             color: #6b6b6b;
         }
-
-        /* PAGE CONTENT (Blog, License, About) */
         .page-content {
             padding: 40px 0 60px;
         }
@@ -649,8 +637,6 @@
             font-weight: 500;
             margin-right: 4px;
         }
-
-        /* Toast notification */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -674,16 +660,12 @@
         .toast.success { background: #00a86b; }
         .toast.error { background: #dc3545; }
         .toast.info { background: #0057ff; }
-
-        /* Hidden sections */
         .page-section {
             display: none;
         }
         .page-section.active {
             display: block;
         }
-
-        /* RESPONSIVE */
         @media (max-width: 700px) {
             .header-inner { flex-direction: column; align-items: stretch; gap: 12px; }
             .nav-links { justify-content: center; gap: 14px; }
@@ -708,14 +690,12 @@
 </head>
 <body>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- HEADER -->
 <header class="header">
     <div class="container header-inner">
         <a class="logo" onclick="navigateTo('home')">
-            <i class="fas fa-cube"></i> Mexpanse
+            <i class="fas fa-cube"></i> Mexpanse3D
             <span class="free-badge"><i class="fas fa-check-circle"></i> 100% Free</span>
             <span class="admin-mode-badge" id="adminBadge">🔧 Admin</span>
         </a>
@@ -733,11 +713,8 @@
     </div>
 </header>
 
-<!-- ============================================================ -->
 <!-- PAGE: HOME -->
-<!-- ============================================================ -->
 <div class="page-section active" id="page-home">
-    <!-- HERO -->
     <section class="hero container">
         <h1>Бесплатные 3D-модели</h1>
         <p>Высококачественные .glb, .obj, .fbx от сообщества. Свободно для коммерции.</p>
@@ -748,7 +725,6 @@
         </div>
     </section>
 
-    <!-- FILTERS -->
     <div class="container">
         <div class="filters" id="filtersContainer">
             <span class="label"><i class="fas fa-sliders-h"></i> Категории:</span>
@@ -761,30 +737,25 @@
         </div>
     </div>
 
-    <!-- GRID -->
     <div class="container">
         <div class="grid" id="modelGrid"></div>
     </div>
 </div>
 
-<!-- ============================================================ -->
 <!-- PAGE: POPULAR -->
-<!-- ============================================================ -->
 <div class="page-section" id="page-popular">
     <div class="container page-content">
         <h1>⭐ Популярные модели</h1>
-        <p>Самые скачиваемые и просматриваемые 3D-модели сообщества Mexpanse.</p>
+        <p>Самые скачиваемые и просматриваемые 3D-модели сообщества Mexpanse3D.</p>
         <div class="grid" id="popularGrid"></div>
     </div>
 </div>
 
-<!-- ============================================================ -->
 <!-- PAGE: LICENSE -->
-<!-- ============================================================ -->
 <div class="page-section" id="page-license">
     <div class="container page-content">
         <h1>📄 Лицензия</h1>
-        <p>Все модели на Mexpanse распространяются по лицензии <strong>Creative Commons Zero (CC0)</strong>.</p>
+        <p>Все модели на Mexpanse3D распространяются по лицензии <strong>Creative Commons Zero (CC0)</strong>.</p>
 
         <div class="license-section">
             <h3><i class="fas fa-check-circle" style="color:#00a86b;"></i> Что разрешено</h3>
@@ -807,7 +778,7 @@
 
         <div class="license-section" style="border-left-color:#ff6b35;">
             <h3><i class="fas fa-heart" style="color:#ff6b35;"></i> Благодарность</h3>
-            <p>Хотя это и не обязательно, мы будем рады, если вы укажете авторство и поставите ссылку на Mexpanse в своих проектах. Это помогает сообществу расти! 🙌</p>
+            <p>Хотя это и не обязательно, мы будем рады, если вы укажете авторство и поставите ссылку на Mexpanse3D в своих проектах. Это помогает сообществу расти! 🙌</p>
         </div>
 
         <h2>Форматы файлов</h2>
@@ -822,15 +793,13 @@
         <h2>Контакты</h2>
         <p>По вопросам лицензирования и сотрудничества пишите нам:</p>
         <ul>
-            <li>📧 Email: <a href="mailto:legal@mexpanse.com" style="color:#0057ff;text-decoration:none;">legal@mexpanse.com</a></li>
-            <li>📱 Telegram: <a href="https://t.me/your_channel" style="color:#0057ff;text-decoration:none;">@mexpanse_channel</a></li>
+            <li>📧 Email: <a href="mailto:legal@mexpanse3d.com" style="color:#0057ff;text-decoration:none;">legal@mexpanse3d.com</a></li>
+            <li>📱 Telegram: <a href="https://t.me/your_channel" style="color:#0057ff;text-decoration:none;">@mexpanse3d_channel</a></li>
         </ul>
     </div>
 </div>
 
-<!-- ============================================================ -->
 <!-- PAGE: BLOG -->
-<!-- ============================================================ -->
 <div class="page-section" id="page-blog">
     <div class="container page-content">
         <h1>📝 Блог о 3D</h1>
@@ -856,7 +825,7 @@
 
         <div class="blog-card">
             <div class="date">📅 24 июня 2025</div>
-            <h3>Знакомство с Mexpanse: почему мы создали этот проект</h3>
+            <h3>Знакомство с Mexpanse3D: почему мы создали этот проект</h3>
             <p>История создания платформы, наши цели и планы на будущее. Присоединяйтесь к сообществу! <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;">Читать далее →</a></p>
         </div>
 
@@ -868,24 +837,17 @@
     </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- FOOTER -->
-<!-- ============================================================ -->
 <footer class="container footer">
-    <div>© 2025 Mexpanse — бесплатные 3D-модели</div>
+    <div>© 2025 Mexpanse3D — бесплатные 3D-модели</div>
     <div class="footer-links">
         <a onclick="navigateTo('home')">Главная</a>
         <a onclick="navigateTo('license')">Лицензия</a>
         <a onclick="navigateTo('blog')">Блог</a>
-        <a onclick="showToast('info', 'ℹ️ О проекте Mexpanse')">О нас</a>
+        <a onclick="showToast('info', 'ℹ️ О проекте Mexpanse3D')">О нас</a>
         <a onclick="showToast('info', '❓ Часто задаваемые вопросы')">FAQ</a>
         <a onclick="showToast('info', '🐙 GitHub репозиторий')"><i class="fab fa-github"></i> GitHub</a>
     </div>
 </footer>
-
-<!-- ============================================================ -->
-<!-- MODALS -->
-<!-- ============================================================ -->
 
 <!-- MODAL: Subscribe -->
 <div class="modal-overlay" id="subscribeModal">
@@ -985,18 +947,15 @@
     //  NAVIGATION
     // ============================================================
     function navigateTo(page) {
-        // Скрываем все страницы
         document.querySelectorAll('.page-section').forEach(el => {
             el.classList.remove('active');
         });
 
-        // Показываем нужную
         const target = document.getElementById('page-' + page);
         if (target) {
             target.classList.add('active');
         }
 
-        // Обновляем активную ссылку в навигации
         document.querySelectorAll('.nav-links a').forEach(el => {
             el.classList.remove('active');
             if (el.dataset.page === page) {
@@ -1004,20 +963,16 @@
             }
         });
 
-        // Если перешли на главную — обновляем грид
         if (page === 'home') {
             renderModels(currentCategory, document.getElementById('searchInput')?.value || '');
         }
 
-        // Если перешли на популярное — показываем популярные модели
         if (page === 'popular') {
             renderPopularModels();
         }
 
-        // Прокручиваем вверх
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // Показываем уведомление
         const pageNames = {
             home: '🏠 Главная страница',
             popular: '⭐ Популярные модели',
@@ -1034,7 +989,6 @@
     // ============================================================
     function renderPopularModels() {
         const grid = document.getElementById('popularGrid');
-        // Берем первые 6 моделей как "популярные"
         const popular = modelsData.slice(0, 6);
 
         if (popular.length === 0) {
@@ -1443,7 +1397,7 @@
             return;
         }
 
-        const content = `// ${model.title}.${model.format}\n// Автор: ${model.author}\n// Категория: ${model.category}\n// Сгенерировано Mexpanse\n\n// Это пример 3D-модели в формате ${model.format}`;
+        const content = `// ${model.title}.${model.format}\n// Автор: ${model.author}\n// Категория: ${model.category}\n// Сгенерировано Mexpanse3D\n\n// Это пример 3D-модели в формате ${model.format}`;
 
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
@@ -1496,7 +1450,7 @@
                 downloadLocked: '🔒 Подпишись',
                 footer: 'бесплатные 3D-модели',
                 popularTitle: '⭐ Популярные модели',
-                popularDesc: 'Самые скачиваемые и просматриваемые 3D-модели сообщества Mexpanse.',
+                popularDesc: 'Самые скачиваемые и просматриваемые 3D-модели сообщества Mexpanse3D.',
                 licenseTitle: '📄 Лицензия',
                 blogTitle: '📝 Блог о 3D',
                 blogDesc: 'Новости, туториалы и обзоры из мира 3D-моделирования.'
@@ -1512,7 +1466,7 @@
                 downloadLocked: '🔒 Subscribe',
                 footer: 'free 3D models',
                 popularTitle: '⭐ Popular Models',
-                popularDesc: 'Most downloaded and viewed 3D models from Mexpanse community.',
+                popularDesc: 'Most downloaded and viewed 3D models from Mexpanse3D community.',
                 licenseTitle: '📄 License',
                 blogTitle: '📝 3D Blog',
                 blogDesc: 'News, tutorials and reviews from the world of 3D modeling.'
@@ -1525,7 +1479,7 @@
         document.getElementById('searchInput').placeholder = t.searchPlaceholder;
         document.querySelector('#page-home .search-box button').textContent = t.searchBtn;
         document.querySelector('#page-home .filters .label').innerHTML = `<i class="fas fa-sliders-h"></i> ${t.categories}:`;
-        document.querySelector('.footer div:first-child').innerHTML = `© 2025 Mexpanse — ${t.footer}`;
+        document.querySelector('.footer div:first-child').innerHTML = `© 2025 Mexpanse3D — ${t.footer}`;
 
         document.querySelector('#page-popular h1').textContent = t.popularTitle;
         document.querySelector('#page-popular p').textContent = t.popularDesc;
@@ -1550,7 +1504,7 @@
     // ============================================================
     renderModels('all', '');
     renderPopularModels();
-    showToast('info', '👋 Добро пожаловать в Mexpanse!');
+    showToast('info', '👋 Добро пожаловать в Mexpanse3D!');
 
     document.querySelectorAll('.modal-overlay').forEach(modal => {
         modal.addEventListener('click', function(e) {
