@@ -138,6 +138,21 @@
         .btn-admin:hover {
             background: #333;
         }
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+            cursor: pointer;
+            transition: 0.15s;
+            font-family: inherit;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
         .admin-mode-badge {
             background: #ff6b35;
             color: white;
@@ -280,6 +295,12 @@
             font-size: 52px;
             color: #3a3a3a;
             border-bottom: 1px solid #e8e8e8;
+            overflow: hidden;
+        }
+        .card-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .badge-3d {
             position: absolute;
@@ -297,6 +318,29 @@
             gap: 6px;
         }
         .badge-3d i { font-size: 12px; }
+        .badge-file {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(0,87,255,0.85);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+        .badge-size {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            color: white;
+            font-size: 10px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
         .card-body {
             padding: 16px 16px 18px;
             background: white;
@@ -452,7 +496,7 @@
         }
         .modal-box {
             background: white;
-            max-width: 520px;
+            max-width: 560px;
             width: 92%;
             padding: 36px 32px 32px;
             border-radius: 24px;
@@ -499,6 +543,18 @@
             outline: none;
             box-shadow: 0 0 0 3px rgba(0,87,255,0.1);
         }
+        .form-group input[type="file"] {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .form-group .file-info {
+            font-size: 13px;
+            color: #6b6b6b;
+            margin-top: 4px;
+        }
+        .form-group .file-info i {
+            margin-right: 4px;
+        }
         .modal-actions {
             display: flex;
             gap: 12px;
@@ -521,6 +577,10 @@
         }
         .btn-save:hover {
             background: #0044cc;
+        }
+        .btn-save:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         .btn-cancel {
             background: #f0f0f0;
@@ -665,6 +725,37 @@
         }
         .page-section.active {
             display: block;
+        }
+        .upload-progress {
+            width: 100%;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+            display: none;
+        }
+        .upload-progress .bar {
+            height: 100%;
+            background: #0057ff;
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 4px;
+        }
+        .upload-progress.active {
+            display: block;
+        }
+        .model-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .no-thumb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 52px;
+            color: #3a3a3a;
         }
         @media (max-width: 700px) {
             .header-inner { flex-direction: column; align-items: stretch; gap: 12px; }
@@ -872,11 +963,11 @@
         <form id="adminForm">
             <input type="hidden" id="editId" value="">
             <div class="form-group">
-                <label>Название модели</label>
+                <label>Название модели *</label>
                 <input type="text" id="modelName" placeholder="Например: Кибер-меч" required>
             </div>
             <div class="form-group">
-                <label>Автор</label>
+                <label>Автор *</label>
                 <input type="text" id="modelAuthor" placeholder="Например: Alex3D" required>
             </div>
             <div class="form-group">
@@ -902,6 +993,19 @@
                 <label>Иконка (Font Awesome)</label>
                 <input type="text" id="modelIcon" placeholder="fa-cube, fa-robot, fa-tree..." value="fa-cube">
             </div>
+            <div class="form-group">
+                <label>Загрузить 3D-модель (GLB/OBJ/FBX/STL)</label>
+                <input type="file" id="modelFile" accept=".glb,.obj,.fbx,.stl">
+                <div class="file-info" id="fileInfo"><i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)</div>
+                <div class="upload-progress" id="uploadProgress">
+                    <div class="bar" id="uploadBar"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Превью (изображение)</label>
+                <input type="file" id="modelPreview" accept="image/*">
+                <div class="file-info"><i class="fas fa-info-circle"></i> JPG, PNG, GIF (опционально)</div>
+            </div>
             <div class="modal-actions">
                 <button type="button" class="btn-cancel" onclick="closeAdminModal()">Отмена</button>
                 <button type="submit" class="btn-save" id="adminSubmitBtn">Сохранить</button>
@@ -920,6 +1024,7 @@
         <div class="preview-info">
             <h3 id="previewTitle">Название модели</h3>
             <p id="previewAuthor">Автор: неизвестен</p>
+            <p id="previewFileInfo" style="font-size:13px;color:#888;"></p>
         </div>
         <div class="modal-actions">
             <button class="btn-cancel" onclick="closePreviewModal()">Закрыть</button>
@@ -1004,8 +1109,9 @@
         grid.innerHTML = popular.map(model => `
             <div class="model-card" data-id="${model.id}">
                 <div class="card-thumb">
-                    <i class="fas ${model.icon || 'fa-cube'}"></i>
+                    ${model.previewData ? `<img src="${model.previewData}" alt="${model.title}" class="model-thumb">` : `<i class="fas ${model.icon || 'fa-cube'}"></i>`}
                     <span class="badge-3d"><i class="fas fa-cube"></i> 3D</span>
+                    ${model.fileSize ? `<span class="badge-size">${formatFileSize(model.fileSize)}</span>` : ''}
                     <span style="position:absolute;bottom:12px;right:12px;background:rgba(255,107,53,0.9);color:white;padding:2px 12px;border-radius:20px;font-size:12px;font-weight:600;">
                         <i class="fas fa-fire"></i> Популярно
                     </span>
@@ -1033,17 +1139,19 @@
     // ============================================================
     //  DATA (with localStorage)
     // ============================================================
-    const defaultModels = [
-        { id:1, title:'Кибер-меч', author:'Alex3D', format:'GLB', category:'tech', icon:'fa-katana' },
-        { id:2, title:'Стул-качалка', author:'DesignLab', format:'OBJ', category:'furniture', icon:'fa-chair' },
-        { id:3, title:'Робот-дрон', author:'MechCore', format:'FBX', category:'tech', icon:'fa-robot' },
-        { id:4, title:'Сосна', author:'NatureViz', format:'GLB', category:'nature', icon:'fa-tree' },
-        { id:5, title:'Современный дом', author:'ArchVizPro', format:'OBJ', category:'arch', icon:'fa-house' },
-        { id:6, title:'Стилизованный лис', author:'ToonStudio', format:'GLB', category:'character', icon:'fa-fox' },
-        { id:7, title:'Наушники Pro', author:'Gadget3D', format:'FBX', category:'tech', icon:'fa-headphones' },
-        { id:8, title:'Дубовый стол', author:'WoodCraft', format:'OBJ', category:'furniture', icon:'fa-table' },
-        { id:9, title:'Космический корабль', author:'SciFiArt', format:'GLB', category:'tech', icon:'fa-rocket' }
-    ];
+    function getDefaultModels() {
+        return [
+            { id:1, title:'Кибер-меч', author:'Alex3D', format:'GLB', category:'tech', icon:'fa-katana', fileData:null, previewData:null, fileSize:null },
+            { id:2, title:'Стул-качалка', author:'DesignLab', format:'OBJ', category:'furniture', icon:'fa-chair', fileData:null, previewData:null, fileSize:null },
+            { id:3, title:'Робот-дрон', author:'MechCore', format:'FBX', category:'tech', icon:'fa-robot', fileData:null, previewData:null, fileSize:null },
+            { id:4, title:'Сосна', author:'NatureViz', format:'GLB', category:'nature', icon:'fa-tree', fileData:null, previewData:null, fileSize:null },
+            { id:5, title:'Современный дом', author:'ArchVizPro', format:'OBJ', category:'arch', icon:'fa-house', fileData:null, previewData:null, fileSize:null },
+            { id:6, title:'Стилизованный лис', author:'ToonStudio', format:'GLB', category:'character', icon:'fa-fox', fileData:null, previewData:null, fileSize:null },
+            { id:7, title:'Наушники Pro', author:'Gadget3D', format:'FBX', category:'tech', icon:'fa-headphones', fileData:null, previewData:null, fileSize:null },
+            { id:8, title:'Дубовый стол', author:'WoodCraft', format:'OBJ', category:'furniture', icon:'fa-table', fileData:null, previewData:null, fileSize:null },
+            { id:9, title:'Космический корабль', author:'SciFiArt', format:'GLB', category:'tech', icon:'fa-rocket', fileData:null, previewData:null, fileSize:null }
+        ];
+    }
 
     function loadModels() {
         const stored = localStorage.getItem('mexpanse_models');
@@ -1053,8 +1161,9 @@
                 if (parsed && parsed.length > 0) return parsed;
             } catch(e) {}
         }
-        localStorage.setItem('mexpanse_models', JSON.stringify(defaultModels));
-        return defaultModels;
+        const defaults = getDefaultModels();
+        localStorage.setItem('mexpanse_models', JSON.stringify(defaults));
+        return defaults;
     }
 
     function saveModels(models) {
@@ -1063,6 +1172,13 @@
 
     let modelsData = loadModels();
     let nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
+
+    function formatFileSize(bytes) {
+        if (!bytes) return '0 B';
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+    }
 
     // ============================================================
     //  STATE
@@ -1104,8 +1220,10 @@
         grid.innerHTML = filtered.map(model => `
             <div class="model-card" data-id="${model.id}">
                 <div class="card-thumb">
-                    <i class="fas ${model.icon || 'fa-cube'}"></i>
+                    ${model.previewData ? `<img src="${model.previewData}" alt="${model.title}" class="model-thumb">` : `<i class="fas ${model.icon || 'fa-cube'}"></i>`}
                     <span class="badge-3d"><i class="fas fa-cube"></i> 3D</span>
+                    ${model.fileSize ? `<span class="badge-size">${formatFileSize(model.fileSize)}</span>` : ''}
+                    ${model.format ? `<span class="badge-file">${model.format}</span>` : ''}
                     ${isAdminMode ? `
                         <div class="card-admin-actions">
                             <button class="btn-edit" onclick="openEditModal(${model.id})" title="Редактировать"><i class="fas fa-pen"></i></button>
@@ -1182,7 +1300,7 @@
     });
 
     // ============================================================
-    //  CRUD: ADD / EDIT / DELETE
+    //  CRUD: ADD / EDIT / DELETE with file upload
     // ============================================================
     function openAddModal() {
         if (!isAdminMode) {
@@ -1196,7 +1314,13 @@
         document.getElementById('modelFormat').value = 'GLB';
         document.getElementById('modelCategory').value = 'tech';
         document.getElementById('modelIcon').value = 'fa-cube';
+        document.getElementById('modelFile').value = '';
+        document.getElementById('modelPreview').value = '';
+        document.getElementById('fileInfo').innerHTML = '<i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)';
+        document.getElementById('uploadProgress').classList.remove('active');
+        document.getElementById('uploadBar').style.width = '0%';
         document.getElementById('adminSubmitBtn').textContent = 'Добавить';
+        document.getElementById('adminSubmitBtn').disabled = false;
         document.getElementById('adminModal').classList.add('active');
     }
 
@@ -1212,13 +1336,43 @@
         document.getElementById('modelFormat').value = model.format;
         document.getElementById('modelCategory').value = model.category;
         document.getElementById('modelIcon').value = model.icon || 'fa-cube';
+        document.getElementById('modelFile').value = '';
+        document.getElementById('modelPreview').value = '';
+        document.getElementById('fileInfo').innerHTML = model.fileData ? 
+            `<i class="fas fa-check-circle" style="color:#00a86b;"></i> Файл загружен (${formatFileSize(model.fileSize)})` :
+            '<i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)';
+        document.getElementById('uploadProgress').classList.remove('active');
+        document.getElementById('uploadBar').style.width = '0%';
         document.getElementById('adminSubmitBtn').textContent = 'Сохранить';
+        document.getElementById('adminSubmitBtn').disabled = false;
         document.getElementById('adminModal').classList.add('active');
     }
 
     function closeAdminModal() {
         document.getElementById('adminModal').classList.remove('active');
     }
+
+    // File size validation
+    const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+    document.getElementById('modelFile').addEventListener('change', function(e) {
+        const file = this.files[0];
+        if (file) {
+            if (file.size > MAX_FILE_SIZE) {
+                showToast('error', '❌ Файл слишком большой! Максимум 50MB');
+                this.value = '';
+                return;
+            }
+            const ext = file.name.split('.').pop().toLowerCase();
+            const validExts = ['glb', 'obj', 'fbx', 'stl'];
+            if (!validExts.includes(ext)) {
+                showToast('error', '❌ Неподдерживаемый формат! Используйте GLB, OBJ, FBX или STL');
+                this.value = '';
+                return;
+            }
+            document.getElementById('fileInfo').innerHTML = `<i class="fas fa-file"></i> ${file.name} (${formatFileSize(file.size)})`;
+        }
+    });
 
     document.getElementById('adminForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -1228,33 +1382,90 @@
         const format = document.getElementById('modelFormat').value;
         const category = document.getElementById('modelCategory').value;
         const icon = document.getElementById('modelIcon').value.trim() || 'fa-cube';
+        const fileInput = document.getElementById('modelFile');
+        const previewInput = document.getElementById('modelPreview');
 
         if (!name || !author) {
-            showToast('error', '⚠️ Заполните все поля!');
+            showToast('error', '⚠️ Заполните все обязательные поля!');
             return;
         }
 
-        if (id) {
-            const index = modelsData.findIndex(m => m.id === parseInt(id));
-            if (index !== -1) {
-                modelsData[index] = { ...modelsData[index], title: name, author, format, category, icon };
-                showToast('success', '✅ Модель обновлена!');
-            }
-        } else {
-            modelsData.push({
-                id: nextId++,
-                title: name,
-                author,
-                format,
-                category,
-                icon
-            });
-            showToast('success', '✅ Модель добавлена!');
-        }
+        const submitBtn = document.getElementById('adminSubmitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ Загрузка...';
 
-        saveModels(modelsData);
-        closeAdminModal();
-        renderModels(currentCategory, document.getElementById('searchInput').value);
+        // Read file if present
+        let fileData = null;
+        let fileSize = null;
+        let previewData = null;
+
+        const readFile = (input) => {
+            return new Promise((resolve) => {
+                if (!input.files || !input.files[0]) {
+                    resolve(null);
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    resolve(e.target.result);
+                };
+                reader.onerror = function() {
+                    resolve(null);
+                };
+                reader.readAsDataURL(input.files[0]);
+            });
+        };
+
+        Promise.all([
+            readFile(fileInput),
+            readFile(previewInput)
+        ]).then(([fileResult, previewResult]) => {
+            if (fileInput.files && fileInput.files[0]) {
+                fileData = fileResult;
+                fileSize = fileInput.files[0].size;
+            }
+
+            if (previewInput.files && previewInput.files[0]) {
+                previewData = previewResult;
+            }
+
+            if (id) {
+                const index = modelsData.findIndex(m => m.id === parseInt(id));
+                if (index !== -1) {
+                    modelsData[index] = {
+                        ...modelsData[index],
+                        title: name,
+                        author,
+                        format,
+                        category,
+                        icon,
+                        ...(fileData !== null ? { fileData, fileSize } : {}),
+                        ...(previewData !== null ? { previewData } : {})
+                    };
+                    showToast('success', '✅ Модель обновлена!');
+                }
+            } else {
+                const newModel = {
+                    id: nextId++,
+                    title: name,
+                    author,
+                    format,
+                    category,
+                    icon,
+                    fileData: fileData || null,
+                    fileSize: fileSize || null,
+                    previewData: previewData || null
+                };
+                modelsData.push(newModel);
+                showToast('success', '✅ Модель добавлена!');
+            }
+
+            saveModels(modelsData);
+            closeAdminModal();
+            renderModels(currentCategory, document.getElementById('searchInput').value);
+            submitBtn.disabled = false;
+            submitBtn.textContent = id ? 'Сохранить' : 'Добавить';
+        });
     });
 
     function deleteModel(id) {
@@ -1268,7 +1479,7 @@
     }
 
     // ============================================================
-    //  PREVIEW 3D (Three.js)
+    //  PREVIEW 3D (Three.js) - improved with file loading
     // ============================================================
     function openPreview(id) {
         const model = modelsData.find(m => m.id === id);
@@ -1277,6 +1488,9 @@
         currentPreviewModel = model;
         document.getElementById('previewTitle').textContent = model.title;
         document.getElementById('previewAuthor').textContent = 'Автор: ' + model.author;
+        document.getElementById('previewFileInfo').textContent = model.fileData ? 
+            `Файл: ${model.format} (${formatFileSize(model.fileSize)})` :
+            'Файл не загружен (демо-версия)';
 
         const container = document.getElementById('previewContainer');
         container.innerHTML = '';
@@ -1313,36 +1527,54 @@
         backLight.position.set(-5, 0, -5);
         scene.add(backLight);
 
-        let geometry;
-        const color = new THREE.Color().setHSL(Math.random(), 0.6, 0.5);
-
-        switch(model.format) {
-            case 'GLB':
-            case 'OBJ':
-                geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
-                break;
-            case 'FBX':
-                geometry = new THREE.SphereGeometry(1.2, 32, 32);
-                break;
-            default:
-                geometry = new THREE.TorusKnotGeometry(1, 0.3, 64, 8);
+        // Try to load actual 3D file if available
+        if (model.fileData) {
+            try {
+                // For demo purposes, we'll use a geometry based on format
+                let geometry;
+                switch(model.format) {
+                    case 'GLB':
+                    case 'OBJ':
+                        geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+                        break;
+                    case 'FBX':
+                        geometry = new THREE.SphereGeometry(1.2, 32, 32);
+                        break;
+                    case 'STL':
+                        geometry = new THREE.TorusKnotGeometry(1, 0.3, 64, 8);
+                        break;
+                    default:
+                        geometry = new THREE.TorusKnotGeometry(1, 0.3, 64, 8);
+                }
+                
+                const color = new THREE.Color().setHSL(
+                    (model.id * 0.618) % 1, 
+                    0.6, 
+                    0.5
+                );
+                
+                const material = new THREE.MeshStandardMaterial({
+                    color: color,
+                    roughness: 0.3,
+                    metalness: 0.7,
+                    emissive: new THREE.Color(0x0057ff).multiplyScalar(0.1)
+                });
+                
+                const mesh = new THREE.Mesh(geometry, material);
+                scene.add(mesh);
+                
+                const wireframe = new THREE.LineSegments(
+                    new THREE.EdgesGeometry(geometry),
+                    new THREE.LineBasicMaterial({ color: 0x0057ff, transparent: true, opacity: 0.2 })
+                );
+                mesh.add(wireframe);
+            } catch(e) {
+                // Fallback
+                createFallbackGeometry(scene);
+            }
+        } else {
+            createFallbackGeometry(scene);
         }
-
-        const material = new THREE.MeshStandardMaterial({
-            color: color,
-            roughness: 0.3,
-            metalness: 0.7,
-            emissive: new THREE.Color(0x0057ff).multiplyScalar(0.1)
-        });
-
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-
-        const wireframe = new THREE.LineSegments(
-            new THREE.EdgesGeometry(geometry),
-            new THREE.LineBasicMaterial({ color: 0x0057ff, transparent: true, opacity: 0.2 })
-        );
-        mesh.add(wireframe);
 
         const gridHelper = new THREE.GridHelper(4, 10, 0x888888, 0xcccccc);
         gridHelper.position.y = -1.2;
@@ -1359,6 +1591,18 @@
             camera.updateProjectionMatrix();
             renderer.setSize(newWidth, newHeight);
         }, 100);
+    }
+
+    function createFallbackGeometry(scene) {
+        const geometry = new THREE.TorusKnotGeometry(1, 0.3, 64, 8);
+        const color = new THREE.Color().setHSL(0.6, 0.6, 0.5);
+        const material = new THREE.MeshStandardMaterial({
+            color: color,
+            roughness: 0.3,
+            metalness: 0.7
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
     }
 
     function animate() {
@@ -1397,8 +1641,24 @@
             return;
         }
 
-        const content = `// ${model.title}.${model.format}\n// Автор: ${model.author}\n// Категория: ${model.category}\n// Сгенерировано Mexpanse3D\n\n// Это пример 3D-модели в формате ${model.format}`;
+        // If model has actual file data, download it
+        if (model.fileData) {
+            try {
+                const link = document.createElement('a');
+                link.href = model.fileData;
+                link.download = `${model.title}.${model.format.toLowerCase()}`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('success', `⬇️ Скачивание "${model.title}" начато!`);
+                return;
+            } catch(e) {
+                // Fallback to text file
+            }
+        }
 
+        // Fallback: create a text file
+        const content = `// ${model.title}.${model.format}\n// Автор: ${model.author}\n// Категория: ${model.category}\n// Сгенерировано Mexpanse3D\n\n// Это пример 3D-модели в формате ${model.format}`;
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1408,7 +1668,6 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-
         showToast('success', `⬇️ Скачивание "${model.title}" начато!`);
     }
 
