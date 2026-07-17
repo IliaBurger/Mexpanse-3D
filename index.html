@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mexpanse · Бесплатные 3D модели</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        /* HEADER */
+        .header {
+            padding: 14px 0;
+            border-bottom: 1px solid #e8e8e8;
+            background: #fafafa;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #0a0a0a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logo i {
+            color: #0057ff;
+            font-size: 28px;
+        }
+        .logo .free-badge {
+            background: #00a86b;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 30px;
+            letter-spacing: 0.3px;
+            margin-left: 4px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #2b2b2b;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.15s;
+            cursor: pointer;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-links a:hover {
+            color: #0057ff;
+        }
+        .nav-links a.active {
+            color: #0057ff;
+            border-bottom-color: #0057ff;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .lang-toggle {
+            background: #f0f0f0;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.15s;
+        }
+        .lang-toggle:hover {
+            background: #e0e0e0;
+        }
+        .btn-primary {
+            background: #0057ff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+            cursor: pointer;
+            transition: 0.15s;
+            font-family: inherit;
+        }
+        .btn-primary:hover {
+            background: #0044cc;
+        }
+        .btn-admin {
+            background: #1a1a1a;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+            cursor: pointer;
+            transition: 0.15s;
+            font-family: inherit;
+        }
+        .btn-admin:hover {
+            background: #333;
+        }
+        .admin-mode-badge {
+            background: #ff6b35;
+            color: white;
+            font-size: 11px;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            display: none;
+        }
+        .admin-mode-badge.active {
+            display: inline-block;
+        }
+        /* HERO */
+        .hero {
+            padding: 44px 0 36px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+        .hero p {
+            color: #5e5e5e;
+            font-size: 18px;
+            margin-bottom: 26px;
+        }
+        .search-box {
+            max-width: 720px;
+            margin: 0 auto;
+            display: flex;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 60px;
+            padding: 6px 6px 6px 24px;
+            align-items: center;
+            transition: 0.2s;
+        }
+        .search-box:focus-within {
+            border-color: #0057ff;
+            box-shadow: 0 4px 16px rgba(0,87,255,0.12);
+        }
+        .search-box i {
+            color: #8a8a8a;
+            font-size: 18px;
+        }
+        .search-box input {
+            border: none;
+            padding: 14px 16px;
+            font-size: 16px;
+            flex: 1;
+            outline: none;
+            font-family: inherit;
+            background: transparent;
+        }
+        .search-box button {
+            background: #0057ff;
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.15s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .search-box button:hover {
+            background: #0044cc;
+        }
+        /* FILTERS */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            padding: 8px 0 24px;
+            border-bottom: 1px solid #eaeaea;
+            margin-bottom: 32px;
+            align-items: center;
+        }
+        .filters .label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #5e5e5e;
+            margin-right: 8px;
+        }
+        .filter-chip {
+            background: transparent;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2b2b2b;
+            cursor: pointer;
+            transition: 0.1s;
+            font-family: inherit;
+        }
+        .filter-chip:hover {
+            background: #f0f0f0;
+        }
+        .filter-chip.active {
+            background: #1a1a1a;
+            color: white;
+        }
+        .filter-chip.add-btn {
+            margin-left: auto;
+            color: #0057ff;
+            font-weight: 600;
+        }
+        .filter-chip.add-btn:hover {
+            background: #e6f0ff;
+        }
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 28px;
+            margin-bottom: 56px;
+        }
+        .model-card {
+            border-radius: 16px;
+            overflow: hidden;
+            background: #fafafa;
+            border: 1px solid #efefef;
+            transition: 0.2s ease;
+            position: relative;
+        }
+        .model-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px -8px rgba(0,0,0,0.08);
+            border-color: #ddd;
+        }
+        .card-thumb {
+            position: relative;
+            background: #f0f2f5;
+            height: 190px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 52px;
+            color: #3a3a3a;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        .badge-3d {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge-3d i { font-size: 12px; }
+        .card-body {
+            padding: 16px 16px 18px;
+            background: white;
+        }
+        .card-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-title .format {
+            font-weight: 400;
+            font-size: 12px;
+            color: #888;
+            background: #f0f0f0;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .card-author {
+            font-size: 14px;
+            color: #6b6b6b;
+            margin-bottom: 12px;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            gap: 8px;
+        }
+        .btn-preview {
+            background: none;
+            border: 1px solid #d0d0d0;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+            font-family: inherit;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
+        }
+        .btn-preview:hover {
+            background: #0057ff;
+            border-color: #0057ff;
+            color: white;
+        }
+        .btn-download {
+            background: #0057ff;
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
+        }
+        .btn-download:hover {
+            background: #0044cc;
+        }
+        .btn-download.locked {
+            background: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+        .btn-download.locked:hover {
+            background: #ccc;
+        }
+        /* Admin buttons on card */
+        .card-admin-actions {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: none;
+            gap: 6px;
+            z-index: 10;
+        }
+        .model-card:hover .card-admin-actions {
+            display: flex;
+        }
+        .card-admin-actions button {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.15s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-admin-actions .btn-edit:hover {
+            background: #0057ff;
+        }
+        .card-admin-actions .btn-delete:hover {
+            background: #dc3545;
+        }
+        /* FOOTER */
+        .footer {
+            border-top: 1px solid #eaeaea;
+            padding: 32px 0 40px;
+            margin-top: 20px;
+            color: #5e5e5e;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-links {
+            display: flex;
+            gap: 28px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: #2b2b2b;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+        .footer-links a:hover {
+            color: #0057ff;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(6px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: white;
+            max-width: 520px;
+            width: 92%;
+            padding: 36px 32px 32px;
+            border-radius: 24px;
+            box-shadow: 0 32px 64px rgba(0,0,0,0.2);
+            animation: fadeUp 0.25s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-box h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-box h2 i {
+            color: #0057ff;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: #2b2b2b;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #d0d0d0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: 0.15s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #0057ff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,87,255,0.1);
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        .modal-actions button {
+            padding: 10px 28px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.15s;
+            font-family: inherit;
+        }
+        .btn-save {
+            background: #0057ff;
+            color: white;
+        }
+        .btn-save:hover {
+            background: #0044cc;
+        }
+        .btn-cancel {
+            background: #f0f0f0;
+            color: #1a1a1a;
+        }
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        /* Preview modal */
+        .preview-container {
+            width: 100%;
+            height: 300px;
+            background: #f0f2f5;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #888;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .preview-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .preview-info {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .preview-info h3 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        .preview-info p {
+            color: #6b6b6b;
+        }
+
+        /* PAGE CONTENT (Blog, License, About) */
+        .page-content {
+            padding: 40px 0 60px;
+        }
+        .page-content h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .page-content h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 30px 0 12px;
+            color: #0057ff;
+        }
+        .page-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 20px 0 8px;
+        }
+        .page-content p {
+            color: #444;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .page-content ul {
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+        .page-content ul li {
+            color: #444;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+        .page-content .blog-card {
+            background: #fafafa;
+            border: 1px solid #eaeaea;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: 0.2s;
+        }
+        .page-content .blog-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+        .page-content .blog-card .date {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .page-content .blog-card h3 {
+            margin-top: 0;
+        }
+        .page-content .blog-card p {
+            margin-bottom: 0;
+        }
+        .license-section {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border-left: 4px solid #0057ff;
+        }
+        .license-section h3 {
+            margin-top: 0;
+            color: #0057ff;
+        }
+        .tag {
+            display: inline-block;
+            background: #e6f0ff;
+            color: #0057ff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-right: 4px;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1a1a1a;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: 0.3s ease;
+            max-width: 400px;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success { background: #00a86b; }
+        .toast.error { background: #dc3545; }
+        .toast.info { background: #0057ff; }
+
+        /* Hidden sections */
+        .page-section {
+            display: none;
+        }
+        .page-section.active {
+            display: block;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 700px) {
+            .header-inner { flex-direction: column; align-items: stretch; gap: 12px; }
+            .nav-links { justify-content: center; gap: 14px; }
+            .header-actions { justify-content: center; }
+            .hero h1 { font-size: 28px; }
+            .search-box { flex-wrap: wrap; background: transparent; border: none; padding: 0; gap: 12px; }
+            .search-box input { background: white; border: 1px solid #d0d0d0; border-radius: 60px; padding: 14px 20px; width: 100%; }
+            .search-box button { width: 100%; justify-content: center; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+            .filter-chip.add-btn { margin-left: 0; }
+            .page-content h1 { font-size: 28px; }
+            .footer { flex-direction: column; text-align: center; }
+            .footer-links { justify-content: center; }
+        }
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .card-thumb { height: 140px; font-size: 38px; }
+            .card-body { padding: 12px; }
+            .card-title { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="container header-inner">
+        <a class="logo" onclick="navigateTo('home')">
+            <i class="fas fa-cube"></i> Mexpanse
+            <span class="free-badge"><i class="fas fa-check-circle"></i> 100% Free</span>
+            <span class="admin-mode-badge" id="adminBadge">🔧 Admin</span>
+        </a>
+        <div class="nav-links">
+            <a class="active" onclick="navigateTo('home')" data-page="home">Главная</a>
+            <a onclick="navigateTo('popular')" data-page="popular">Популярное</a>
+            <a onclick="navigateTo('license')" data-page="license">Лицензия</a>
+            <a onclick="navigateTo('blog')" data-page="blog">Блог</a>
+        </div>
+        <div class="header-actions">
+            <button class="lang-toggle" id="langToggle">EN / RU</button>
+            <button class="btn-admin" id="adminToggleBtn"><i class="fas fa-shield-alt"></i> Admin</button>
+            <button class="btn-primary" onclick="openAddModal()"><i class="fas fa-upload"></i> Загрузить</button>
+        </div>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- PAGE: HOME -->
+<!-- ============================================================ -->
+<div class="page-section active" id="page-home">
+    <!-- HERO -->
+    <section class="hero container">
+        <h1>Бесплатные 3D-модели</h1>
+        <p>Высококачественные .glb, .obj, .fbx от сообщества. Свободно для коммерции.</p>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Поиск модели..." id="searchInput">
+            <button onclick="filterModels()">Найти</button>
+        </div>
+    </section>
+
+    <!-- FILTERS -->
+    <div class="container">
+        <div class="filters" id="filtersContainer">
+            <span class="label"><i class="fas fa-sliders-h"></i> Категории:</span>
+            <button class="filter-chip active" data-cat="all">Все</button>
+            <button class="filter-chip" data-cat="tech">Техника</button>
+            <button class="filter-chip" data-cat="furniture">Мебель</button>
+            <button class="filter-chip" data-cat="character">Персонажи</button>
+            <button class="filter-chip" data-cat="nature">Природа</button>
+            <button class="filter-chip" data-cat="arch">Архитектура</button>
+        </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="container">
+        <div class="grid" id="modelGrid"></div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE: POPULAR -->
+<!-- ============================================================ -->
+<div class="page-section" id="page-popular">
+    <div class="container page-content">
+        <h1>⭐ Популярные модели</h1>
+        <p>Самые скачиваемые и просматриваемые 3D-модели сообщества Mexpanse.</p>
+        <div class="grid" id="popularGrid"></div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE: LICENSE -->
+<!-- ============================================================ -->
+<div class="page-section" id="page-license">
+    <div class="container page-content">
+        <h1>📄 Лицензия</h1>
+        <p>Все модели на Mexpanse распространяются по лицензии <strong>Creative Commons Zero (CC0)</strong>.</p>
+
+        <div class="license-section">
+            <h3><i class="fas fa-check-circle" style="color:#00a86b;"></i> Что разрешено</h3>
+            <ul>
+                <li>✅ Скачивание и использование в личных и коммерческих проектах</li>
+                <li>✅ Модификация и адаптация моделей под свои нужды</li>
+                <li>✅ Публикация работ с использованием моделей (с указанием авторства или без)</li>
+                <li>✅ Продажа продуктов, в которых используются эти модели</li>
+            </ul>
+        </div>
+
+        <div class="license-section" style="border-left-color:#dc3545;">
+            <h3><i class="fas fa-times-circle" style="color:#dc3545;"></i> Что запрещено</h3>
+            <ul>
+                <li>❌ Перепродажа моделей в неизменном виде как самостоятельного продукта</li>
+                <li>❌ Выдача моделей за свои собственные (плагиат)</li>
+                <li>❌ Использование в запрещённых или незаконных целях</li>
+            </ul>
+        </div>
+
+        <div class="license-section" style="border-left-color:#ff6b35;">
+            <h3><i class="fas fa-heart" style="color:#ff6b35;"></i> Благодарность</h3>
+            <p>Хотя это и не обязательно, мы будем рады, если вы укажете авторство и поставите ссылку на Mexpanse в своих проектах. Это помогает сообществу расти! 🙌</p>
+        </div>
+
+        <h2>Форматы файлов</h2>
+        <p>Мы поддерживаем следующие форматы 3D-моделей:</p>
+        <ul>
+            <li><span class="tag">GLB</span> — универсальный формат для веба и игр</li>
+            <li><span class="tag">OBJ</span> — классический формат для 3D-редакторов</li>
+            <li><span class="tag">FBX</span> — формат для анимации и игровых движков</li>
+            <li><span class="tag">STL</span> — формат для 3D-печати</li>
+        </ul>
+
+        <h2>Контакты</h2>
+        <p>По вопросам лицензирования и сотрудничества пишите нам:</p>
+        <ul>
+            <li>📧 Email: <a href="mailto:legal@mexpanse.com" style="color:#0057ff;text-decoration:none;">legal@mexpanse.com</a></li>
+            <li>📱 Telegram: <a href="https://t.me/your_channel" style="color:#0057ff;text-decoration:none;">@mexpanse_channel</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE: BLOG -->
+<!-- ============================================================ -->
+<div class="page-section" id="page-blog">
+    <div class="container page-content">
+        <h1>📝 Блог о 3D</h1>
+        <p>Новости, туториалы и обзоры из мира 3D-моделирования.</p>
+
+        <div class="blog-card">
+            <div class="date">📅 15 июля 2025</div>
+            <h3>Как выбрать формат 3D-модели для своего проекта</h3>
+            <p>Разбираемся в особенностях форматов GLB, OBJ, FBX и STL. Узнайте, какой формат подходит для игр, 3D-печати и веб-приложений. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;">Читать далее →</a></p>
+        </div>
+
+        <div class="blog-card">
+            <div class="date">📅 8 июля 2025</div>
+            <h3>Топ-5 инструментов для создания 3D-моделей</h3>
+            <p>Обзор лучших бесплатных и платных программ для 3D-моделирования: от Blender до ZBrush. Советы для новичков и профессионалов. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;">Читать далее →</a></p>
+        </div>
+
+        <div class="blog-card">
+            <div class="date">📅 1 июля 2025</div>
+            <h3>Как оптимизировать 3D-модели для игр</h3>
+            <p>Практические советы по снижению полигонов, оптимизации текстур и подготовке моделей для Unity и Unreal Engine. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;">Читать далее →</a></p>
+        </div>
+
+        <div class="blog-card">
+            <div class="date">📅 24 июня 2025</div>
+            <h3>Знакомство с Mexpanse: почему мы создали этот проект</h3>
+            <p>История создания платформы, наши цели и планы на будущее. Присоединяйтесь к сообществу! <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;">Читать далее →</a></p>
+        </div>
+
+        <div style="text-align:center;padding:20px 0;">
+            <button class="btn-primary" onclick="showToast('info', '📨 Подпишитесь на обновления!')" style="padding:12px 40px;font-size:16px;">
+                <i class="fas fa-bell"></i> Подписаться на новости
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- FOOTER -->
+<!-- ============================================================ -->
+<footer class="container footer">
+    <div>© 2025 Mexpanse — бесплатные 3D-модели</div>
+    <div class="footer-links">
+        <a onclick="navigateTo('home')">Главная</a>
+        <a onclick="navigateTo('license')">Лицензия</a>
+        <a onclick="navigateTo('blog')">Блог</a>
+        <a onclick="showToast('info', 'ℹ️ О проекте Mexpanse')">О нас</a>
+        <a onclick="showToast('info', '❓ Часто задаваемые вопросы')">FAQ</a>
+        <a onclick="showToast('info', '🐙 GitHub репозиторий')"><i class="fab fa-github"></i> GitHub</a>
+    </div>
+</footer>
+
+<!-- ============================================================ -->
+<!-- MODALS -->
+<!-- ============================================================ -->
+
+<!-- MODAL: Subscribe -->
+<div class="modal-overlay" id="subscribeModal">
+    <div class="modal-box">
+        <div style="text-align:center;">
+            <i class="fab fa-telegram-plane" style="font-size:52px;color:#0057ff;margin-bottom:12px;display:block;"></i>
+            <h2>🔥 Подпишись на Telegram</h2>
+            <p style="color:#5e5e5e;margin-bottom:20px;">Чтобы скачать модель, подпишитесь на наш канал. Это бесплатно и займёт 5 секунд!</p>
+            <a href="https://t.me/your_channel" target="_blank" class="btn-primary" style="display:inline-block;text-decoration:none;padding:12px 32px;font-size:16px;" id="tgSubscribeBtn">
+                <i class="fab fa-telegram"></i> Подписаться
+            </a>
+            <br><br>
+            <button class="btn-cancel" id="modalCloseBtn">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Admin (Add/Edit) -->
+<div class="modal-overlay" id="adminModal">
+    <div class="modal-box">
+        <h2 id="adminModalTitle"><i class="fas fa-plus-circle"></i> Добавить модель</h2>
+        <form id="adminForm">
+            <input type="hidden" id="editId" value="">
+            <div class="form-group">
+                <label>Название модели</label>
+                <input type="text" id="modelName" placeholder="Например: Кибер-меч" required>
+            </div>
+            <div class="form-group">
+                <label>Автор</label>
+                <input type="text" id="modelAuthor" placeholder="Например: Alex3D" required>
+            </div>
+            <div class="form-group">
+                <label>Формат</label>
+                <select id="modelFormat">
+                    <option value="GLB">GLB</option>
+                    <option value="OBJ">OBJ</option>
+                    <option value="FBX">FBX</option>
+                    <option value="STL">STL</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Категория</label>
+                <select id="modelCategory">
+                    <option value="tech">Техника</option>
+                    <option value="furniture">Мебель</option>
+                    <option value="character">Персонажи</option>
+                    <option value="nature">Природа</option>
+                    <option value="arch">Архитектура</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Иконка (Font Awesome)</label>
+                <input type="text" id="modelIcon" placeholder="fa-cube, fa-robot, fa-tree..." value="fa-cube">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeAdminModal()">Отмена</button>
+                <button type="submit" class="btn-save" id="adminSubmitBtn">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Preview 3D -->
+<div class="modal-overlay" id="previewModal">
+    <div class="modal-box" style="max-width:640px;">
+        <h2><i class="fas fa-cube"></i> 3D Предпросмотр</h2>
+        <div class="preview-container" id="previewContainer">
+            <i class="fas fa-cube" style="font-size:64px;color:#ccc;"></i>
+        </div>
+        <div class="preview-info">
+            <h3 id="previewTitle">Название модели</h3>
+            <p id="previewAuthor">Автор: неизвестен</p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closePreviewModal()">Закрыть</button>
+            <button class="btn-save" onclick="downloadCurrentPreview()"><i class="fas fa-download"></i> Скачать</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+    // ============================================================
+    //  TOAST NOTIFICATIONS
+    // ============================================================
+    function showToast(type = 'info', message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'toast ' + type;
+        toast.classList.add('show');
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ============================================================
+    //  NAVIGATION
+    // ============================================================
+    function navigateTo(page) {
+        // Скрываем все страницы
+        document.querySelectorAll('.page-section').forEach(el => {
+            el.classList.remove('active');
+        });
+
+        // Показываем нужную
+        const target = document.getElementById('page-' + page);
+        if (target) {
+            target.classList.add('active');
+        }
+
+        // Обновляем активную ссылку в навигации
+        document.querySelectorAll('.nav-links a').forEach(el => {
+            el.classList.remove('active');
+            if (el.dataset.page === page) {
+                el.classList.add('active');
+            }
+        });
+
+        // Если перешли на главную — обновляем грид
+        if (page === 'home') {
+            renderModels(currentCategory, document.getElementById('searchInput')?.value || '');
+        }
+
+        // Если перешли на популярное — показываем популярные модели
+        if (page === 'popular') {
+            renderPopularModels();
+        }
+
+        // Прокручиваем вверх
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Показываем уведомление
+        const pageNames = {
+            home: '🏠 Главная страница',
+            popular: '⭐ Популярные модели',
+            license: '📄 Лицензия Creative Commons',
+            blog: '📝 Блог о 3D'
+        };
+        if (pageNames[page]) {
+            showToast('info', pageNames[page]);
+        }
+    }
+
+    // ============================================================
+    //  RENDER POPULAR MODELS
+    // ============================================================
+    function renderPopularModels() {
+        const grid = document.getElementById('popularGrid');
+        // Берем первые 6 моделей как "популярные"
+        const popular = modelsData.slice(0, 6);
+
+        if (popular.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:60px 0; color:#888;">
+                    <i class="fas fa-box-open" style="font-size:40px; display:block; margin-bottom:16px;"></i>
+                    <strong>Нет популярных моделей</strong>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = popular.map(model => `
+            <div class="model-card" data-id="${model.id}">
+                <div class="card-thumb">
+                    <i class="fas ${model.icon || 'fa-cube'}"></i>
+                    <span class="badge-3d"><i class="fas fa-cube"></i> 3D</span>
+                    <span style="position:absolute;bottom:12px;right:12px;background:rgba(255,107,53,0.9);color:white;padding:2px 12px;border-radius:20px;font-size:12px;font-weight:600;">
+                        <i class="fas fa-fire"></i> Популярно
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        ${model.title}
+                        <span class="format">${model.format}</span>
+                    </div>
+                    <div class="card-author"><i class="far fa-user-circle"></i> ${model.author}</div>
+                    <div class="card-footer">
+                        <button class="btn-preview" onclick="openPreview(${model.id})">
+                            <i class="fas fa-eye"></i> Предпросмотр
+                        </button>
+                        <button class="btn-download ${subscribed ? '' : 'locked'}" onclick="downloadModel(${model.id})">
+                            ${subscribed ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-lock"></i>'}
+                            ${subscribed ? 'Скачать' : '🔒 Подпишись'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ============================================================
+    //  DATA (with localStorage)
+    // ============================================================
+    const defaultModels = [
+        { id:1, title:'Кибер-меч', author:'Alex3D', format:'GLB', category:'tech', icon:'fa-katana' },
+        { id:2, title:'Стул-качалка', author:'DesignLab', format:'OBJ', category:'furniture', icon:'fa-chair' },
+        { id:3, title:'Робот-дрон', author:'MechCore', format:'FBX', category:'tech', icon:'fa-robot' },
+        { id:4, title:'Сосна', author:'NatureViz', format:'GLB', category:'nature', icon:'fa-tree' },
+        { id:5, title:'Современный дом', author:'ArchVizPro', format:'OBJ', category:'arch', icon:'fa-house' },
+        { id:6, title:'Стилизованный лис', author:'ToonStudio', format:'GLB', category:'character', icon:'fa-fox' },
+        { id:7, title:'Наушники Pro', author:'Gadget3D', format:'FBX', category:'tech', icon:'fa-headphones' },
+        { id:8, title:'Дубовый стол', author:'WoodCraft', format:'OBJ', category:'furniture', icon:'fa-table' },
+        { id:9, title:'Космический корабль', author:'SciFiArt', format:'GLB', category:'tech', icon:'fa-rocket' }
+    ];
+
+    function loadModels() {
+        const stored = localStorage.getItem('mexpanse_models');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (parsed && parsed.length > 0) return parsed;
+            } catch(e) {}
+        }
+        localStorage.setItem('mexpanse_models', JSON.stringify(defaultModels));
+        return defaultModels;
+    }
+
+    function saveModels(models) {
+        localStorage.setItem('mexpanse_models', JSON.stringify(models));
+    }
+
+    let modelsData = loadModels();
+    let nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
+
+    // ============================================================
+    //  STATE
+    // ============================================================
+    let currentCategory = 'all';
+    let currentLang = 'ru';
+    let isAdminMode = false;
+    let subscribed = false;
+    let currentPreviewModel = null;
+    let scene, camera, renderer, controls;
+
+    // ============================================================
+    //  RENDER HOME GRID
+    // ============================================================
+    const grid = document.getElementById('modelGrid');
+
+    function renderModels(category = 'all', searchQuery = '') {
+        let filtered = modelsData;
+        if (category !== 'all') filtered = filtered.filter(m => m.category === category);
+        if (searchQuery.trim() !== '') {
+            const q = searchQuery.trim().toLowerCase();
+            filtered = filtered.filter(m =>
+                m.title.toLowerCase().includes(q) ||
+                m.author.toLowerCase().includes(q)
+            );
+        }
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:60px 0; color:#888;">
+                    <i class="fas fa-box-open" style="font-size:40px; display:block; margin-bottom:16px;"></i>
+                    <strong>Ничего не найдено</strong><br>
+                    <span style="font-size:15px;">Попробуйте изменить запрос</span>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = filtered.map(model => `
+            <div class="model-card" data-id="${model.id}">
+                <div class="card-thumb">
+                    <i class="fas ${model.icon || 'fa-cube'}"></i>
+                    <span class="badge-3d"><i class="fas fa-cube"></i> 3D</span>
+                    ${isAdminMode ? `
+                        <div class="card-admin-actions">
+                            <button class="btn-edit" onclick="openEditModal(${model.id})" title="Редактировать"><i class="fas fa-pen"></i></button>
+                            <button class="btn-delete" onclick="deleteModel(${model.id})" title="Удалить"><i class="fas fa-trash"></i></button>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="card-body">
+                    <div class="card-title">
+                        ${model.title}
+                        <span class="format">${model.format}</span>
+                    </div>
+                    <div class="card-author"><i class="far fa-user-circle"></i> ${model.author}</div>
+                    <div class="card-footer">
+                        <button class="btn-preview" onclick="openPreview(${model.id})">
+                            <i class="fas fa-eye"></i> Предпросмотр
+                        </button>
+                        <button class="btn-download ${subscribed ? '' : 'locked'}" onclick="downloadModel(${model.id})">
+                            ${subscribed ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-lock"></i>'}
+                            ${subscribed ? 'Скачать' : '🔒 Подпишись'}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ============================================================
+    //  FILTERS & SEARCH
+    // ============================================================
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', function() {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            currentCategory = this.dataset.cat;
+            const searchVal = document.getElementById('searchInput').value;
+            renderModels(currentCategory, searchVal);
+        });
+    });
+
+    function filterModels() {
+        const searchVal = document.getElementById('searchInput').value;
+        renderModels(currentCategory, searchVal);
+    }
+    document.getElementById('searchInput').addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') filterModels();
+    });
+
+    // ============================================================
+    //  ADMIN MODE
+    // ============================================================
+    const ADMIN_PASSWORD = 'admin123';
+
+    document.getElementById('adminToggleBtn').addEventListener('click', function() {
+        if (isAdminMode) {
+            isAdminMode = false;
+            document.getElementById('adminBadge').classList.remove('active');
+            this.innerHTML = '<i class="fas fa-shield-alt"></i> Admin';
+            renderModels(currentCategory, document.getElementById('searchInput').value);
+            showToast('info', '👋 Режим администратора выключен');
+            return;
+        }
+
+        const password = prompt('Введите пароль администратора:');
+        if (password === ADMIN_PASSWORD) {
+            isAdminMode = true;
+            document.getElementById('adminBadge').classList.add('active');
+            this.innerHTML = '<i class="fas fa-times"></i> Exit Admin';
+            renderModels(currentCategory, document.getElementById('searchInput').value);
+            showToast('success', '🔓 Добро пожаловать в админ-панель!');
+        } else if (password !== null) {
+            showToast('error', '❌ Неверный пароль!');
+        }
+    });
+
+    // ============================================================
+    //  CRUD: ADD / EDIT / DELETE
+    // ============================================================
+    function openAddModal() {
+        if (!isAdminMode) {
+            showToast('error', '⚠️ Войдите в режим администратора!');
+            return;
+        }
+        document.getElementById('adminModalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Добавить модель';
+        document.getElementById('editId').value = '';
+        document.getElementById('modelName').value = '';
+        document.getElementById('modelAuthor').value = '';
+        document.getElementById('modelFormat').value = 'GLB';
+        document.getElementById('modelCategory').value = 'tech';
+        document.getElementById('modelIcon').value = 'fa-cube';
+        document.getElementById('adminSubmitBtn').textContent = 'Добавить';
+        document.getElementById('adminModal').classList.add('active');
+    }
+
+    function openEditModal(id) {
+        if (!isAdminMode) return;
+        const model = modelsData.find(m => m.id === id);
+        if (!model) return;
+
+        document.getElementById('adminModalTitle').innerHTML = '<i class="fas fa-pen"></i> Редактировать модель';
+        document.getElementById('editId').value = id;
+        document.getElementById('modelName').value = model.title;
+        document.getElementById('modelAuthor').value = model.author;
+        document.getElementById('modelFormat').value = model.format;
+        document.getElementById('modelCategory').value = model.category;
+        document.getElementById('modelIcon').value = model.icon || 'fa-cube';
+        document.getElementById('adminSubmitBtn').textContent = 'Сохранить';
+        document.getElementById('adminModal').classList.add('active');
+    }
+
+    function closeAdminModal() {
+        document.getElementById('adminModal').classList.remove('active');
+    }
+
+    document.getElementById('adminForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = document.getElementById('editId').value;
+        const name = document.getElementById('modelName').value.trim();
+        const author = document.getElementById('modelAuthor').value.trim();
+        const format = document.getElementById('modelFormat').value;
+        const category = document.getElementById('modelCategory').value;
+        const icon = document.getElementById('modelIcon').value.trim() || 'fa-cube';
+
+        if (!name || !author) {
+            showToast('error', '⚠️ Заполните все поля!');
+            return;
+        }
+
+        if (id) {
+            const index = modelsData.findIndex(m => m.id === parseInt(id));
+            if (index !== -1) {
+                modelsData[index] = { ...modelsData[index], title: name, author, format, category, icon };
+                showToast('success', '✅ Модель обновлена!');
+            }
+        } else {
+            modelsData.push({
+                id: nextId++,
+                title: name,
+                author,
+                format,
+                category,
+                icon
+            });
+            showToast('success', '✅ Модель добавлена!');
+        }
+
+        saveModels(modelsData);
+        closeAdminModal();
+        renderModels(currentCategory, document.getElementById('searchInput').value);
+    });
+
+    function deleteModel(id) {
+        if (!isAdminMode) return;
+        if (!confirm('Удалить эту модель?')) return;
+
+        modelsData = modelsData.filter(m => m.id !== id);
+        saveModels(modelsData);
+        renderModels(currentCategory, document.getElementById('searchInput').value);
+        showToast('success', '🗑️ Модель удалена!');
+    }
+
+    // ============================================================
+    //  PREVIEW 3D (Three.js)
+    // ============================================================
+    function openPreview(id) {
+        const model = modelsData.find(m => m.id === id);
+        if (!model) return;
+
+        currentPreviewModel = model;
+        document.getElementById('previewTitle').textContent = model.title;
+        document.getElementById('previewAuthor').textContent = 'Автор: ' + model.author;
+
+        const container = document.getElementById('previewContainer');
+        container.innerHTML = '';
+
+        const width = container.clientWidth || 400;
+        const height = 300;
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f2f5);
+
+        camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        camera.position.set(3, 2, 5);
+        camera.lookAt(0, 0, 0);
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 2;
+
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 10, 7);
+        scene.add(directionalLight);
+
+        const backLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        backLight.position.set(-5, 0, -5);
+        scene.add(backLight);
+
+        let geometry;
+        const color = new THREE.Color().setHSL(Math.random(), 0.6, 0.5);
+
+        switch(model.format) {
+            case 'GLB':
+            case 'OBJ':
+                geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+                break;
+            case 'FBX':
+                geometry = new THREE.SphereGeometry(1.2, 32, 32);
+                break;
+            default:
+                geometry = new THREE.TorusKnotGeometry(1, 0.3, 64, 8);
+        }
+
+        const material = new THREE.MeshStandardMaterial({
+            color: color,
+            roughness: 0.3,
+            metalness: 0.7,
+            emissive: new THREE.Color(0x0057ff).multiplyScalar(0.1)
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        const wireframe = new THREE.LineSegments(
+            new THREE.EdgesGeometry(geometry),
+            new THREE.LineBasicMaterial({ color: 0x0057ff, transparent: true, opacity: 0.2 })
+        );
+        mesh.add(wireframe);
+
+        const gridHelper = new THREE.GridHelper(4, 10, 0x888888, 0xcccccc);
+        gridHelper.position.y = -1.2;
+        scene.add(gridHelper);
+
+        animate();
+
+        document.getElementById('previewModal').classList.add('active');
+
+        setTimeout(() => {
+            const newWidth = container.clientWidth || 400;
+            const newHeight = 300;
+            camera.aspect = newWidth / newHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(newWidth, newHeight);
+        }, 100);
+    }
+
+    function animate() {
+        if (!renderer || !scene || !camera) return;
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+    }
+
+    function closePreviewModal() {
+        document.getElementById('previewModal').classList.remove('active');
+        if (renderer) {
+            renderer.dispose();
+            renderer = null;
+        }
+        if (scene) {
+            scene = null;
+        }
+    }
+
+    function downloadCurrentPreview() {
+        if (currentPreviewModel) {
+            downloadModel(currentPreviewModel.id);
+        }
+    }
+
+    // ============================================================
+    //  DOWNLOAD / SUBSCRIBE LOGIC
+    // ============================================================
+    function downloadModel(id) {
+        const model = modelsData.find(m => m.id === id);
+        if (!model) return;
+
+        if (!subscribed) {
+            document.getElementById('subscribeModal').classList.add('active');
+            return;
+        }
+
+        const content = `// ${model.title}.${model.format}\n// Автор: ${model.author}\n// Категория: ${model.category}\n// Сгенерировано Mexpanse\n\n// Это пример 3D-модели в формате ${model.format}`;
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${model.title}.${model.format}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showToast('success', `⬇️ Скачивание "${model.title}" начато!`);
+    }
+
+    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+        document.getElementById('subscribeModal').classList.remove('active');
+    });
+    document.getElementById('subscribeModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+    });
+
+    document.getElementById('tgSubscribeBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        setTimeout(() => {
+            subscribed = true;
+            document.getElementById('subscribeModal').classList.remove('active');
+            renderModels(currentCategory, document.getElementById('searchInput').value);
+            renderPopularModels();
+            showToast('success', '✅ Спасибо! Теперь вы можете скачивать любые модели.');
+        }, 500);
+        window.open('https://t.me/your_channel', '_blank');
+    });
+
+    // ============================================================
+    //  LANGUAGE TOGGLE
+    // ============================================================
+    document.getElementById('langToggle').addEventListener('click', function() {
+        currentLang = currentLang === 'ru' ? 'en' : 'ru';
+        this.textContent = currentLang === 'ru' ? 'EN / RU' : 'RU / EN';
+
+        const texts = {
+            ru: {
+                heroTitle: 'Бесплатные 3D-модели',
+                heroDesc: 'Высококачественные .glb, .obj, .fbx от сообщества. Свободно для коммерции.',
+                searchPlaceholder: 'Поиск модели...',
+                searchBtn: 'Найти',
+                categories: 'Категории',
+                preview: 'Предпросмотр',
+                download: 'Скачать',
+                downloadLocked: '🔒 Подпишись',
+                footer: 'бесплатные 3D-модели',
+                popularTitle: '⭐ Популярные модели',
+                popularDesc: 'Самые скачиваемые и просматриваемые 3D-модели сообщества Mexpanse.',
+                licenseTitle: '📄 Лицензия',
+                blogTitle: '📝 Блог о 3D',
+                blogDesc: 'Новости, туториалы и обзоры из мира 3D-моделирования.'
+            },
+            en: {
+                heroTitle: 'Free 3D Models',
+                heroDesc: 'High-quality .glb, .obj, .fbx from the community. Free for commercial use.',
+                searchPlaceholder: 'Search models...',
+                searchBtn: 'Search',
+                categories: 'Categories',
+                preview: 'Preview',
+                download: 'Download',
+                downloadLocked: '🔒 Subscribe',
+                footer: 'free 3D models',
+                popularTitle: '⭐ Popular Models',
+                popularDesc: 'Most downloaded and viewed 3D models from Mexpanse community.',
+                licenseTitle: '📄 License',
+                blogTitle: '📝 3D Blog',
+                blogDesc: 'News, tutorials and reviews from the world of 3D modeling.'
+            }
+        };
+
+        const t = texts[currentLang];
+        document.querySelector('#page-home .hero h1').textContent = t.heroTitle;
+        document.querySelector('#page-home .hero p').textContent = t.heroDesc;
+        document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+        document.querySelector('#page-home .search-box button').textContent = t.searchBtn;
+        document.querySelector('#page-home .filters .label').innerHTML = `<i class="fas fa-sliders-h"></i> ${t.categories}:`;
+        document.querySelector('.footer div:first-child').innerHTML = `© 2025 Mexpanse — ${t.footer}`;
+
+        document.querySelector('#page-popular h1').textContent = t.popularTitle;
+        document.querySelector('#page-popular p').textContent = t.popularDesc;
+
+        document.querySelector('#page-license h1').textContent = t.licenseTitle;
+        document.querySelector('#page-blog h1').textContent = t.blogTitle;
+        document.querySelector('#page-blog p').textContent = t.blogDesc;
+    });
+
+    // ============================================================
+    //  ADD "ADD" BUTTON TO FILTERS
+    // ============================================================
+    const filtersContainer = document.getElementById('filtersContainer');
+    const addBtn = document.createElement('button');
+    addBtn.className = 'filter-chip add-btn';
+    addBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Добавить';
+    addBtn.onclick = openAddModal;
+    filtersContainer.appendChild(addBtn);
+
+    // ============================================================
+    //  INIT
+    // ============================================================
+    renderModels('all', '');
+    renderPopularModels();
+    showToast('info', '👋 Добро пожаловать в Mexpanse!');
+
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                if (this.id === 'previewModal') closePreviewModal();
+            }
+        });
+    });
+</script>
+</body>
+</html>
