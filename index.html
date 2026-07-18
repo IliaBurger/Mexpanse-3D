@@ -10,754 +10,126 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #ffffff;
-            color: #1a1a1a;
-            line-height: 1.5;
-        }
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        .header {
-            padding: 14px 0;
-            border-bottom: 1px solid #e8e8e8;
-            background: #fafafa;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .logo {
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #0a0a0a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .logo i {
-            color: #0057ff;
-            font-size: 28px;
-        }
-        .logo .free-badge {
-            background: #00a86b;
-            color: white;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 12px;
-            border-radius: 30px;
-            letter-spacing: 0.3px;
-            margin-left: 4px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 28px;
-            font-size: 15px;
-            font-weight: 500;
-            color: #2b2b2b;
-            flex-wrap: wrap;
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: inherit;
-            transition: color 0.15s;
-            cursor: pointer;
-            padding: 4px 0;
-            border-bottom: 2px solid transparent;
-        }
-        .nav-links a:hover {
-            color: #0057ff;
-        }
-        .nav-links a.active {
-            color: #0057ff;
-            border-bottom-color: #0057ff;
-        }
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .lang-toggle {
-            background: #f0f0f0;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.15s;
-        }
-        .lang-toggle:hover {
-            background: #e0e0e0;
-        }
-        .btn-primary {
-            background: #0057ff;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 14px;
-            color: white;
-            cursor: pointer;
-            transition: 0.15s;
-            font-family: inherit;
-        }
-        .btn-primary:hover {
-            background: #0044cc;
-        }
-        .btn-admin {
-            background: #1a1a1a;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 13px;
-            color: white;
-            cursor: pointer;
-            transition: 0.15s;
-            font-family: inherit;
-        }
-        .btn-admin:hover {
-            background: #333;
-        }
-        .btn-danger {
-            background: #dc3545;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 13px;
-            color: white;
-            cursor: pointer;
-            transition: 0.15s;
-            font-family: inherit;
-        }
-        .btn-danger:hover {
-            background: #c82333;
-        }
-        .admin-mode-badge {
-            background: #ff6b35;
-            color: white;
-            font-size: 11px;
-            padding: 2px 12px;
-            border-radius: 30px;
-            font-weight: 600;
-            display: none;
-        }
-        .admin-mode-badge.active {
-            display: inline-block;
-        }
-        .hero {
-            padding: 44px 0 36px;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 38px;
-            font-weight: 700;
-            letter-spacing: -1px;
-            margin-bottom: 10px;
-        }
-        .hero p {
-            color: #5e5e5e;
-            font-size: 18px;
-            margin-bottom: 26px;
-        }
-        .search-box {
-            max-width: 720px;
-            margin: 0 auto;
-            display: flex;
-            background: white;
-            border: 1px solid #d0d0d0;
-            border-radius: 60px;
-            padding: 6px 6px 6px 24px;
-            align-items: center;
-            transition: 0.2s;
-        }
-        .search-box:focus-within {
-            border-color: #0057ff;
-            box-shadow: 0 4px 16px rgba(0,87,255,0.12);
-        }
-        .search-box i {
-            color: #8a8a8a;
-            font-size: 18px;
-        }
-        .search-box input {
-            border: none;
-            padding: 14px 16px;
-            font-size: 16px;
-            flex: 1;
-            outline: none;
-            font-family: inherit;
-            background: transparent;
-        }
-        .search-box button {
-            background: #0057ff;
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.15s;
-            font-family: inherit;
-            white-space: nowrap;
-        }
-        .search-box button:hover {
-            background: #0044cc;
-        }
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 16px;
-            padding: 8px 0 24px;
-            border-bottom: 1px solid #eaeaea;
-            margin-bottom: 32px;
-            align-items: center;
-        }
-        .filters .label {
-            font-size: 14px;
-            font-weight: 500;
-            color: #5e5e5e;
-            margin-right: 8px;
-        }
-        .filter-chip {
-            background: transparent;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #2b2b2b;
-            cursor: pointer;
-            transition: 0.1s;
-            font-family: inherit;
-        }
-        .filter-chip:hover {
-            background: #f0f0f0;
-        }
-        .filter-chip.active {
-            background: #1a1a1a;
-            color: white;
-        }
-        .filter-chip.add-btn {
-            margin-left: auto;
-            color: #0057ff;
-            font-weight: 600;
-        }
-        .filter-chip.add-btn:hover {
-            background: #e6f0ff;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 28px;
-            margin-bottom: 56px;
-        }
-        .model-card {
-            border-radius: 16px;
-            overflow: hidden;
-            background: #fafafa;
-            border: 1px solid #efefef;
-            transition: 0.2s ease;
-            position: relative;
-        }
-        .model-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 32px -8px rgba(0,0,0,0.08);
-            border-color: #ddd;
-        }
-        .card-thumb {
-            position: relative;
-            background: #f0f2f5;
-            height: 190px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 52px;
-            color: #3a3a3a;
-            border-bottom: 1px solid #e8e8e8;
-            overflow: hidden;
-        }
-        .card-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .badge-3d {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(4px);
-            color: white;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #ffffff; color: #1a1a1a; line-height: 1.5; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+        .header { padding: 14px 0; border-bottom: 1px solid #e8e8e8; background: #fafafa; position: sticky; top: 0; z-index: 100; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .logo { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; color: #0a0a0a; display: flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; }
+        .logo i { color: #0057ff; font-size: 28px; }
+        .logo .free-badge { background: #00a86b; color: white; font-size: 11px; font-weight: 600; padding: 2px 12px; border-radius: 30px; letter-spacing: 0.3px; margin-left: 4px; }
+        .nav-links { display: flex; gap: 28px; font-size: 15px; font-weight: 500; color: #2b2b2b; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: inherit; transition: color 0.15s; cursor: pointer; padding: 4px 0; border-bottom: 2px solid transparent; }
+        .nav-links a:hover { color: #0057ff; }
+        .nav-links a.active { color: #0057ff; border-bottom-color: #0057ff; }
+        .header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .lang-toggle { background: #f0f0f0; border: none; padding: 6px 14px; border-radius: 30px; font-weight: 600; font-size: 13px; cursor: pointer; font-family: inherit; transition: 0.15s; }
+        .lang-toggle:hover { background: #e0e0e0; }
+        .btn-primary { background: #0057ff; border: none; padding: 8px 20px; border-radius: 30px; font-weight: 600; font-size: 14px; color: white; cursor: pointer; transition: 0.15s; font-family: inherit; }
+        .btn-primary:hover { background: #0044cc; }
+        .btn-admin { background: #1a1a1a; border: none; padding: 8px 18px; border-radius: 30px; font-weight: 600; font-size: 13px; color: white; cursor: pointer; transition: 0.15s; font-family: inherit; }
+        .btn-admin:hover { background: #333; }
+        .admin-mode-badge { background: #ff6b35; color: white; font-size: 11px; padding: 2px 12px; border-radius: 30px; font-weight: 600; display: none; }
+        .admin-mode-badge.active { display: inline-block; }
+        .hero { padding: 44px 0 36px; text-align: center; }
+        .hero h1 { font-size: 38px; font-weight: 700; letter-spacing: -1px; margin-bottom: 10px; }
+        .hero p { color: #5e5e5e; font-size: 18px; margin-bottom: 26px; }
+        .search-box { max-width: 720px; margin: 0 auto; display: flex; background: white; border: 1px solid #d0d0d0; border-radius: 60px; padding: 6px 6px 6px 24px; align-items: center; transition: 0.2s; }
+        .search-box:focus-within { border-color: #0057ff; box-shadow: 0 4px 16px rgba(0,87,255,0.12); }
+        .search-box i { color: #8a8a8a; font-size: 18px; }
+        .search-box input { border: none; padding: 14px 16px; font-size: 16px; flex: 1; outline: none; font-family: inherit; background: transparent; }
+        .search-box button { background: #0057ff; border: none; color: white; font-weight: 600; padding: 12px 28px; border-radius: 40px; font-size: 15px; cursor: pointer; transition: 0.15s; font-family: inherit; white-space: nowrap; }
+        .search-box button:hover { background: #0044cc; }
+        .filters { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 8px 0 24px; border-bottom: 1px solid #eaeaea; margin-bottom: 32px; align-items: center; }
+        .filters .label { font-size: 14px; font-weight: 500; color: #5e5e5e; margin-right: 8px; }
+        .filter-chip { background: transparent; border: none; padding: 6px 14px; border-radius: 30px; font-size: 14px; font-weight: 500; color: #2b2b2b; cursor: pointer; transition: 0.1s; font-family: inherit; }
+        .filter-chip:hover { background: #f0f0f0; }
+        .filter-chip.active { background: #1a1a1a; color: white; }
+        .filter-chip.add-btn { margin-left: auto; color: #0057ff; font-weight: 600; }
+        .filter-chip.add-btn:hover { background: #e6f0ff; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 28px; margin-bottom: 56px; }
+        .model-card { border-radius: 16px; overflow: hidden; background: #fafafa; border: 1px solid #efefef; transition: 0.2s ease; position: relative; }
+        .model-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -8px rgba(0,0,0,0.08); border-color: #ddd; }
+        .card-thumb { position: relative; background: #f0f2f5; height: 190px; display: flex; align-items: center; justify-content: center; font-size: 52px; color: #3a3a3a; border-bottom: 1px solid #e8e8e8; overflow: hidden; }
+        .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .badge-3d { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); color: white; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 30px; display: flex; align-items: center; gap: 6px; }
         .badge-3d i { font-size: 12px; }
-        .badge-file {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            background: rgba(0,87,255,0.85);
-            color: white;
-            font-size: 10px;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
-        .badge-size {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            color: white;
-            font-size: 10px;
-            font-weight: 500;
-            padding: 3px 10px;
-            border-radius: 20px;
-        }
-        .card-body {
-            padding: 16px 16px 18px;
-            background: white;
-        }
-        .card-title {
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .card-title .format {
-            font-weight: 400;
-            font-size: 12px;
-            color: #888;
-            background: #f0f0f0;
-            padding: 2px 10px;
-            border-radius: 20px;
-        }
-        .card-author {
-            font-size: 14px;
-            color: #6b6b6b;
-            margin-bottom: 12px;
-        }
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 6px;
-            gap: 8px;
-        }
-        .btn-preview {
-            background: none;
-            border: 1px solid #d0d0d0;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.15s;
-            font-family: inherit;
-            color: #1a1a1a;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex: 1;
-            justify-content: center;
-        }
-        .btn-preview:hover {
-            background: #0057ff;
-            border-color: #0057ff;
-            color: white;
-        }
-        .btn-download {
-            background: #0057ff;
-            border: none;
-            color: white;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.15s;
-            font-family: inherit;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex: 1;
-            justify-content: center;
-        }
-        .btn-download:hover {
-            background: #0044cc;
-        }
-        .btn-download.locked {
-            background: #ccc;
-            color: #666;
-            cursor: not-allowed;
-        }
-        .btn-download.locked:hover {
-            background: #ccc;
-        }
-        .card-admin-actions {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            display: none;
-            gap: 6px;
-            z-index: 10;
-        }
-        .model-card:hover .card-admin-actions {
-            display: flex;
-        }
-        .card-admin-actions button {
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(4px);
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: 0.15s;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .card-admin-actions .btn-edit:hover {
-            background: #0057ff;
-        }
-        .card-admin-actions .btn-delete:hover {
-            background: #dc3545;
-        }
-        .footer {
-            border-top: 1px solid #eaeaea;
-            padding: 32px 0 40px;
-            margin-top: 20px;
-            color: #5e5e5e;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .footer-links {
-            display: flex;
-            gap: 28px;
-            flex-wrap: wrap;
-        }
-        .footer-links a {
-            color: #2b2b2b;
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
-            transition: color 0.15s;
-        }
-        .footer-links a:hover {
-            color: #0057ff;
-        }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(6px);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-box {
-            background: white;
-            max-width: 560px;
-            width: 92%;
-            padding: 36px 32px 32px;
-            border-radius: 24px;
-            box-shadow: 0 32px 64px rgba(0,0,0,0.2);
-            animation: fadeUp 0.25s ease;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .modal-box h2 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .modal-box h2 i {
-            color: #0057ff;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 4px;
-            color: #2b2b2b;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #d0d0d0;
-            border-radius: 12px;
-            font-size: 15px;
-            font-family: inherit;
-            transition: 0.15s;
-        }
-        .form-group input:focus, .form-group select:focus {
-            border-color: #0057ff;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0,87,255,0.1);
-        }
-        .form-group input[type="file"] {
-            padding: 8px;
-            cursor: pointer;
-        }
-        .form-group .file-info {
-            font-size: 13px;
-            color: #6b6b6b;
-            margin-top: 4px;
-        }
-        .form-group .file-info i {
-            margin-right: 4px;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
-        .modal-actions button {
-            padding: 10px 28px;
-            border-radius: 30px;
-            border: none;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.15s;
-            font-family: inherit;
-        }
-        .btn-save {
-            background: #0057ff;
-            color: white;
-        }
-        .btn-save:hover {
-            background: #0044cc;
-        }
-        .btn-save:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .btn-cancel {
-            background: #f0f0f0;
-            color: #1a1a1a;
-        }
-        .btn-cancel:hover {
-            background: #e0e0e0;
-        }
-        .preview-container {
-            width: 100%;
-            height: 300px;
-            background: #f0f2f5;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            color: #888;
-            margin-bottom: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-        .preview-container canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-        .preview-info {
-            text-align: center;
-            margin-bottom: 16px;
-        }
-        .preview-info h3 {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-        .preview-info p {
-            color: #6b6b6b;
-        }
-        .page-content {
-            padding: 40px 0 60px;
-        }
-        .page-content h1 {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-        .page-content h2 {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 30px 0 12px;
-            color: #0057ff;
-        }
-        .page-content h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin: 20px 0 8px;
-        }
-        .page-content p {
-            color: #444;
-            font-size: 16px;
-            line-height: 1.7;
-            margin-bottom: 16px;
-        }
-        .page-content ul {
-            padding-left: 24px;
-            margin-bottom: 16px;
-        }
-        .page-content ul li {
-            color: #444;
-            font-size: 16px;
-            line-height: 1.7;
-            margin-bottom: 8px;
-        }
-        .page-content .blog-card {
-            background: #fafafa;
-            border: 1px solid #eaeaea;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-            transition: 0.2s;
-        }
-        .page-content .blog-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-        }
-        .page-content .blog-card .date {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-        .page-content .blog-card h3 {
-            margin-top: 0;
-        }
-        .page-content .blog-card p {
-            margin-bottom: 0;
-        }
-        .license-section {
-            background: #f8f9fa;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border-left: 4px solid #0057ff;
-        }
-        .license-section h3 {
-            margin-top: 0;
-            color: #0057ff;
-        }
-        .tag {
-            display: inline-block;
-            background: #e6f0ff;
-            color: #0057ff;
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            margin-right: 4px;
-        }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1a1a1a;
-            color: white;
-            padding: 16px 24px;
-            border-radius: 16px;
-            font-weight: 500;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-            z-index: 1000;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: 0.3s ease;
-            max-width: 400px;
-        }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
+        .badge-file { position: absolute; bottom: 12px; left: 12px; background: rgba(0,87,255,0.85); color: white; font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+        .badge-size { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); color: white; font-size: 10px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+        .card-body { padding: 16px 16px 18px; background: white; }
+        .card-title { font-weight: 600; font-size: 16px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .card-title .format { font-weight: 400; font-size: 12px; color: #888; background: #f0f0f0; padding: 2px 10px; border-radius: 20px; }
+        .card-author { font-size: 14px; color: #6b6b6b; margin-bottom: 12px; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; gap: 8px; }
+        .btn-preview { background: none; border: 1px solid #d0d0d0; padding: 6px 16px; border-radius: 30px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.15s; font-family: inherit; color: #1a1a1a; display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center; }
+        .btn-preview:hover { background: #0057ff; border-color: #0057ff; color: white; }
+        .btn-download { background: #0057ff; border: none; color: white; padding: 6px 16px; border-radius: 30px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.15s; font-family: inherit; display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center; }
+        .btn-download:hover { background: #0044cc; }
+        .btn-download.locked { background: #ccc; color: #666; cursor: not-allowed; }
+        .btn-download.locked:hover { background: #ccc; }
+        .card-admin-actions { position: absolute; top: 12px; right: 12px; display: none; gap: 6px; z-index: 10; }
+        .model-card:hover .card-admin-actions { display: flex; }
+        .card-admin-actions button { background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; transition: 0.15s; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+        .card-admin-actions .btn-edit:hover { background: #0057ff; }
+        .card-admin-actions .btn-delete:hover { background: #dc3545; }
+        .footer { border-top: 1px solid #eaeaea; padding: 32px 0 40px; margin-top: 20px; color: #5e5e5e; font-size: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
+        .footer-links a { color: #2b2b2b; text-decoration: none; font-weight: 500; cursor: pointer; transition: color 0.15s; }
+        .footer-links a:hover { color: #0057ff; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 999; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; max-width: 560px; width: 92%; padding: 36px 32px 32px; border-radius: 24px; box-shadow: 0 32px 64px rgba(0,0,0,0.2); animation: fadeUp 0.25s ease; max-height: 90vh; overflow-y: auto; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-box h2 { font-size: 22px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .modal-box h2 i { color: #0057ff; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px; color: #2b2b2b; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid #d0d0d0; border-radius: 12px; font-size: 15px; font-family: inherit; transition: 0.15s; }
+        .form-group input:focus, .form-group select:focus { border-color: #0057ff; outline: none; box-shadow: 0 0 0 3px rgba(0,87,255,0.1); }
+        .form-group input[type="file"] { padding: 8px; cursor: pointer; }
+        .form-group .file-info { font-size: 13px; color: #6b6b6b; margin-top: 4px; }
+        .form-group .file-info i { margin-right: 4px; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end; }
+        .modal-actions button { padding: 10px 28px; border-radius: 30px; border: none; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.15s; font-family: inherit; }
+        .btn-save { background: #0057ff; color: white; }
+        .btn-save:hover { background: #0044cc; }
+        .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-cancel { background: #f0f0f0; color: #1a1a1a; }
+        .btn-cancel:hover { background: #e0e0e0; }
+        .preview-container { width: 100%; height: 300px; background: #f0f2f5; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 48px; color: #888; margin-bottom: 16px; position: relative; overflow: hidden; }
+        .preview-container canvas { width: 100% !important; height: 100% !important; }
+        .preview-info { text-align: center; margin-bottom: 16px; }
+        .preview-info h3 { font-size: 20px; margin-bottom: 4px; }
+        .preview-info p { color: #6b6b6b; }
+        .page-content { padding: 40px 0 60px; }
+        .page-content h1 { font-size: 36px; font-weight: 700; margin-bottom: 16px; }
+        .page-content h2 { font-size: 24px; font-weight: 600; margin: 30px 0 12px; color: #0057ff; }
+        .page-content h3 { font-size: 18px; font-weight: 600; margin: 20px 0 8px; }
+        .page-content p { color: #444; font-size: 16px; line-height: 1.7; margin-bottom: 16px; }
+        .page-content ul { padding-left: 24px; margin-bottom: 16px; }
+        .page-content ul li { color: #444; font-size: 16px; line-height: 1.7; margin-bottom: 8px; }
+        .page-content .blog-card { background: #fafafa; border: 1px solid #eaeaea; border-radius: 16px; padding: 24px; margin-bottom: 24px; transition: 0.2s; }
+        .page-content .blog-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+        .page-content .blog-card .date { color: #888; font-size: 14px; margin-bottom: 4px; }
+        .page-content .blog-card h3 { margin-top: 0; }
+        .page-content .blog-card p { margin-bottom: 0; }
+        .license-section { background: #f8f9fa; border-radius: 16px; padding: 24px; margin-bottom: 24px; border-left: 4px solid #0057ff; }
+        .license-section h3 { margin-top: 0; color: #0057ff; }
+        .tag { display: inline-block; background: #e6f0ff; color: #0057ff; padding: 2px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; margin-right: 4px; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #1a1a1a; color: white; padding: 16px 24px; border-radius: 16px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 1000; transform: translateY(100px); opacity: 0; transition: 0.3s ease; max-width: 400px; }
+        .toast.show { transform: translateY(0); opacity: 1; }
         .toast.success { background: #00a86b; }
         .toast.error { background: #dc3545; }
         .toast.info { background: #0057ff; }
-        .page-section {
-            display: none;
-        }
-        .page-section.active {
-            display: block;
-        }
-        .upload-progress {
-            width: 100%;
-            height: 4px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 8px;
-            display: none;
-        }
-        .upload-progress .bar {
-            height: 100%;
-            background: #0057ff;
-            width: 0%;
-            transition: width 0.3s;
-            border-radius: 4px;
-        }
-        .upload-progress.active {
-            display: block;
-        }
-        .model-thumb {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .no-thumb {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 52px;
-            color: #3a3a3a;
-        }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        .upload-progress { width: 100%; height: 4px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-top: 8px; display: none; }
+        .upload-progress .bar { height: 100%; background: #0057ff; width: 0%; transition: width 0.3s; border-radius: 4px; }
+        .upload-progress.active { display: block; }
+        .model-thumb { width: 100%; height: 100%; object-fit: cover; }
+        .debug-panel { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; display: none; }
+        .debug-panel.active { display: block; }
+        .debug-panel .label { font-weight: 700; color: #0057ff; }
         @media (max-width: 700px) {
             .header-inner { flex-direction: column; align-items: stretch; gap: 12px; }
             .nav-links { justify-content: center; gap: 14px; }
@@ -830,6 +202,12 @@
     </div>
 
     <div class="container">
+        <div class="debug-panel" id="debugPanel">
+            <div><span class="label" data-i18n="debug_status_label">📊 Статус:</span> <span id="debugStatus" data-i18n="debug_loading">Загрузка...</span></div>
+            <div><span class="label" data-i18n="debug_memory_label">📦 Моделей в памяти:</span> <span id="debugMemoryCount">0</span></div>
+            <div><span class="label" data-i18n="debug_storage_label">💾 Моделей в localStorage:</span> <span id="debugStorageCount">0</span></div>
+            <div><span class="label" data-i18n="debug_admin_label">🔑 Режим админа:</span> <span id="debugAdminMode" data-i18n="debug_admin_off">Выключен</span></div>
+        </div>
         <div class="grid" id="modelGrid"></div>
     </div>
 </div>
@@ -848,7 +226,6 @@
     <div class="container page-content">
         <h1 data-i18n="license_title">📄 Лицензия</h1>
         <p data-i18n="license_intro">Все модели на Mexpanse3D распространяются по лицензии <strong>Creative Commons Zero (CC0)</strong>.</p>
-
         <div class="license-section">
             <h3><i class="fas fa-check-circle" style="color:#00a86b;"></i> <span data-i18n="license_allowed_title">Что разрешено</span></h3>
             <ul>
@@ -858,7 +235,6 @@
                 <li data-i18n="license_allowed_4">✅ Продажа продуктов, в которых используются эти модели</li>
             </ul>
         </div>
-
         <div class="license-section" style="border-left-color:#dc3545;">
             <h3><i class="fas fa-times-circle" style="color:#dc3545;"></i> <span data-i18n="license_forbidden_title">Что запрещено</span></h3>
             <ul>
@@ -867,12 +243,10 @@
                 <li data-i18n="license_forbidden_3">❌ Использование в запрещённых или незаконных целях</li>
             </ul>
         </div>
-
         <div class="license-section" style="border-left-color:#ff6b35;">
             <h3><i class="fas fa-heart" style="color:#ff6b35;"></i> <span data-i18n="license_thanks_title">Благодарность</span></h3>
             <p data-i18n="license_thanks_desc">Хотя это и не обязательно, мы будем рады, если вы укажете авторство и поставите ссылку на Mexpanse3D в своих проектах. Это помогает сообществу расти! 🙌</p>
         </div>
-
         <h2 data-i18n="license_formats_title">Форматы файлов</h2>
         <p data-i18n="license_formats_desc">Мы поддерживаем следующие форматы 3D-моделей:</p>
         <ul>
@@ -881,7 +255,6 @@
             <li><span class="tag">FBX</span> <span data-i18n="format_fbx">— формат для анимации и игровых движков</span></li>
             <li><span class="tag">STL</span> <span data-i18n="format_stl">— формат для 3D-печати</span></li>
         </ul>
-
         <h2 data-i18n="license_contacts_title">Контакты</h2>
         <p data-i18n="license_contacts_desc">По вопросам лицензирования и сотрудничества пишите нам:</p>
         <ul>
@@ -896,31 +269,26 @@
     <div class="container page-content">
         <h1 data-i18n="blog_title">📝 Блог о 3D</h1>
         <p data-i18n="blog_desc">Новости, туториалы и обзоры из мира 3D-моделирования.</p>
-
         <div class="blog-card">
             <div class="date" data-i18n="blog_date_1">📅 15 июля 2025</div>
             <h3 data-i18n="blog_title_1">Как выбрать формат 3D-модели для своего проекта</h3>
             <p data-i18n="blog_desc_1">Разбираемся в особенностях форматов GLB, OBJ, FBX и STL. Узнайте, какой формат подходит для игр, 3D-печати и веб-приложений. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;" data-i18n="blog_read_more">Читать далее →</a></p>
         </div>
-
         <div class="blog-card">
             <div class="date" data-i18n="blog_date_2">📅 8 июля 2025</div>
             <h3 data-i18n="blog_title_2">Топ-5 инструментов для создания 3D-моделей</h3>
             <p data-i18n="blog_desc_2">Обзор лучших бесплатных и платных программ для 3D-моделирования: от Blender до ZBrush. Советы для новичков и профессионалов. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;" data-i18n="blog_read_more">Читать далее →</a></p>
         </div>
-
         <div class="blog-card">
             <div class="date" data-i18n="blog_date_3">📅 1 июля 2025</div>
             <h3 data-i18n="blog_title_3">Как оптимизировать 3D-модели для игр</h3>
             <p data-i18n="blog_desc_3">Практические советы по снижению полигонов, оптимизации текстур и подготовке моделей для Unity и Unreal Engine. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;" data-i18n="blog_read_more">Читать далее →</a></p>
         </div>
-
         <div class="blog-card">
             <div class="date" data-i18n="blog_date_4">📅 24 июня 2025</div>
             <h3 data-i18n="blog_title_4">Знакомство с Mexpanse3D: почему мы создали этот проект</h3>
             <p data-i18n="blog_desc_4">История создания платформы, наши цели и планы на будущее. Присоединяйтесь к сообществу! <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;" data-i18n="blog_read_more">Читать далее →</a></p>
         </div>
-
         <div style="text-align:center;padding:20px 0;">
             <button class="btn-primary" onclick="showToast('info', '📨 Подпишитесь на обновления!')" style="padding:12px 40px;font-size:16px;" data-i18n="blog_subscribe">
                 <i class="fas fa-bell"></i> Подписаться на новости
@@ -938,7 +306,8 @@
         <a onclick="showToast('info', 'ℹ️ О проекте Mexpanse3D')" data-i18n="footer_about">О нас</a>
         <a onclick="showToast('info', '❓ Часто задаваемые вопросы')" data-i18n="footer_faq">FAQ</a>
         <a onclick="showToast('info', '🐙 GitHub репозиторий')"><i class="fab fa-github"></i> GitHub</a>
-        <a onclick="clearAllData()" style="color:#dc3545;"><i class="fas fa-database"></i> Сбросить данные</a>
+        <a onclick="clearAllData()" style="color:#dc3545;" data-i18n="footer_reset"><i class="fas fa-database"></i> Сбросить данные</a>
+        <a onclick="toggleDebug()" style="color:#0057ff;" data-i18n="footer_debug"><i class="fas fa-bug"></i> Debug</a>
     </div>
 </footer>
 
@@ -1039,7 +408,7 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
     // ============================================================
-    //  TRANSLATIONS
+    //  TRANSLATIONS - ПОЛНАЯ ПОДДЕРЖКА РУССКОГО И АНГЛИЙСКОГО
     // ============================================================
     const translations = {
         ru: {
@@ -1103,6 +472,8 @@
             footer_tagline: 'бесплатные 3D-модели',
             footer_about: 'О нас',
             footer_faq: 'FAQ',
+            footer_reset: 'Сбросить данные',
+            footer_debug: 'Debug',
             subscribe_title: '🔥 Подпишись на Telegram',
             subscribe_desc: 'Чтобы скачать модель, подпишитесь на наш канал. Это бесплатно и займёт 5 секунд!',
             subscribe_btn: 'Подписаться',
@@ -1146,7 +517,14 @@
             download_started: '⬇️ Скачивание "{title}" начато!',
             file_uploaded: 'Файл загружен',
             read_full: '📖 Читать полную статью...',
-            data_reset: '🗑️ Все данные сброшены!'
+            data_reset: '🗑️ Все данные сброшены!',
+            debug_status_label: '📊 Статус:',
+            debug_loading: 'Загрузка...',
+            debug_memory_label: '📦 Моделей в памяти:',
+            debug_storage_label: '💾 Моделей в localStorage:',
+            debug_admin_label: '🔑 Режим админа:',
+            debug_admin_off: 'Выключен',
+            debug_admin_on: 'Включен'
         },
         en: {
             badge_free: '100% Free',
@@ -1209,6 +587,8 @@
             footer_tagline: 'free 3D models',
             footer_about: 'About',
             footer_faq: 'FAQ',
+            footer_reset: 'Reset data',
+            footer_debug: 'Debug',
             subscribe_title: '🔥 Subscribe to Telegram',
             subscribe_desc: 'To download models, subscribe to our channel. It\'s free and takes 5 seconds!',
             subscribe_btn: 'Subscribe',
@@ -1252,12 +632,22 @@
             download_started: '⬇️ Downloading "{title}" started!',
             file_uploaded: 'File uploaded',
             read_full: '📖 Read full article...',
-            data_reset: '🗑️ All data has been reset!'
+            data_reset: '🗑️ All data has been reset!',
+            debug_status_label: '📊 Status:',
+            debug_loading: 'Loading...',
+            debug_memory_label: '📦 Models in memory:',
+            debug_storage_label: '💾 Models in localStorage:',
+            debug_admin_label: '🔑 Admin mode:',
+            debug_admin_off: 'Disabled',
+            debug_admin_on: 'Enabled'
         }
     };
 
     let currentLang = 'ru';
 
+    // ============================================================
+    //  ПРИМЕНЕНИЕ ПЕРЕВОДОВ
+    // ============================================================
     function applyTranslations(lang) {
         const t = translations[lang];
         if (!t) return;
@@ -1267,8 +657,6 @@
             if (t[key]) {
                 if (el.tagName === 'INPUT' && el.type === 'text') {
                     el.placeholder = t[key];
-                } else if (el.tagName === 'INPUT' && el.type === 'file') {
-                    // skip file inputs
                 } else {
                     el.innerHTML = t[key];
                 }
@@ -1289,8 +677,7 @@
             document.getElementById('adminModalTitle').innerHTML = `<i class="fas fa-plus-circle"></i> ${t.admin_add_title || 'Add Model'}`;
         }
 
-        const submitBtn = document.getElementById('adminSubmitBtn');
-        submitBtn.textContent = t.btn_save || 'Save';
+        document.getElementById('adminSubmitBtn').textContent = t.btn_save || 'Save';
 
         document.querySelectorAll('.filter-chip[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
@@ -1325,28 +712,72 @@
         document.querySelectorAll('.page-section').forEach(el => {
             el.classList.remove('active');
         });
-
         const target = document.getElementById('page-' + page);
         if (target) {
             target.classList.add('active');
         }
-
         document.querySelectorAll('.nav-links a').forEach(el => {
             el.classList.remove('active');
             if (el.dataset.page === page) {
                 el.classList.add('active');
             }
         });
-
         if (page === 'home') {
             renderModels(currentCategory, document.getElementById('searchInput')?.value || '');
         }
-
         if (page === 'popular') {
             renderPopularModels();
         }
-
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateDebug();
+    }
+
+    // ============================================================
+    //  DEBUG PANEL
+    // ============================================================
+    let debugVisible = false;
+
+    function toggleDebug() {
+        debugVisible = !debugVisible;
+        const panel = document.getElementById('debugPanel');
+        if (debugVisible) {
+            panel.classList.add('active');
+        } else {
+            panel.classList.remove('active');
+        }
+        updateDebug();
+    }
+
+    function updateDebug() {
+        if (!debugVisible) return;
+        const storageData = localStorage.getItem('mexpanse_models');
+        let storageCount = 0;
+        if (storageData) {
+            try {
+                const parsed = JSON.parse(storageData);
+                if (Array.isArray(parsed)) storageCount = parsed.length;
+            } catch(e) {}
+        }
+        document.getElementById('debugMemoryCount').textContent = modelsData.length;
+        document.getElementById('debugStorageCount').textContent = storageCount;
+        
+        const adminLabel = document.getElementById('debugAdminMode');
+        if (isAdminMode) {
+            adminLabel.textContent = translations[currentLang].debug_admin_on || 'Enabled';
+            adminLabel.style.color = '#00a86b';
+        } else {
+            adminLabel.textContent = translations[currentLang].debug_admin_off || 'Disabled';
+            adminLabel.style.color = '#dc3545';
+        }
+        
+        const status = document.getElementById('debugStatus');
+        if (storageCount === modelsData.length) {
+            status.textContent = '✅ ' + (translations[currentLang].debug_status_sync || 'Synchronized');
+            status.style.color = '#00a86b';
+        } else {
+            status.textContent = '⚠️ ' + (translations[currentLang].debug_status_unsync || 'Not synchronized!');
+            status.style.color = '#dc3545';
+        }
     }
 
     // ============================================================
@@ -1394,10 +825,11 @@
                 </div>
             </div>
         `).join('');
+        updateDebug();
     }
 
     // ============================================================
-    //  DATA (with localStorage) - ИСПРАВЛЕННАЯ ВЕРСИЯ
+    //  DATA (with localStorage)
     // ============================================================
     function getDefaultModels() {
         return [
@@ -1419,26 +851,27 @@
             try {
                 const parsed = JSON.parse(stored);
                 if (parsed && Array.isArray(parsed) && parsed.length > 0) {
-                    console.log('✅ Модели загружены из localStorage:', parsed.length);
+                    console.log('✅ Models loaded from localStorage:', parsed.length);
                     return parsed;
                 }
             } catch(e) {
-                console.warn('⚠️ Ошибка парсинга localStorage:', e);
+                console.warn('⚠️ Error parsing localStorage:', e);
             }
         }
         const defaults = getDefaultModels();
         localStorage.setItem('mexpanse_models', JSON.stringify(defaults));
-        console.log('✅ Созданы дефолтные модели');
+        console.log('✅ Default models created');
         return defaults;
     }
 
     function saveModels(models) {
         try {
             localStorage.setItem('mexpanse_models', JSON.stringify(models));
-            console.log('💾 Модели сохранены в localStorage:', models.length);
+            console.log('💾 Models saved to localStorage:', models.length);
+            updateDebug();
         } catch(e) {
-            console.error('❌ Ошибка сохранения в localStorage:', e);
-            showToast('error', '❌ Ошибка сохранения данных!');
+            console.error('❌ Error saving to localStorage:', e);
+            showToast('error', '❌ Error saving data!');
         }
     }
 
@@ -1497,8 +930,8 @@
                     ${model.format ? `<span class="badge-file">${model.format}</span>` : ''}
                     ${isAdminMode ? `
                         <div class="card-admin-actions">
-                            <button class="btn-edit" onclick="openEditModal(${model.id})" title="Edit"><i class="fas fa-pen"></i></button>
-                            <button class="btn-delete" onclick="deleteModel(${model.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                            <button class="btn-edit" onclick="openEditModal(${model.id})" title="${translations[currentLang].btn_edit || 'Edit'}"><i class="fas fa-pen"></i></button>
+                            <button class="btn-delete" onclick="deleteModel(${model.id})" title="${translations[currentLang].btn_delete || 'Delete'}"><i class="fas fa-trash"></i></button>
                         </div>
                     ` : ''}
                 </div>
@@ -1520,6 +953,7 @@
                 </div>
             </div>
         `).join('');
+        updateDebug();
     }
 
     // ============================================================
@@ -1555,6 +989,7 @@
             this.innerHTML = `<i class="fas fa-shield-alt"></i> ${translations[currentLang].btn_admin || 'Admin'}`;
             renderModels(currentCategory, document.getElementById('searchInput').value);
             showToast('info', translations[currentLang].admin_mode_off || '👋 Admin mode disabled');
+            updateDebug();
             return;
         }
 
@@ -1565,13 +1000,14 @@
             this.innerHTML = '<i class="fas fa-times"></i> Exit Admin';
             renderModels(currentCategory, document.getElementById('searchInput').value);
             showToast('success', translations[currentLang].admin_mode_on || '🔓 Welcome to admin panel!');
+            updateDebug();
         } else if (password !== null) {
             showToast('error', translations[currentLang].admin_password_error || '❌ Wrong password!');
         }
     });
 
     // ============================================================
-    //  CRUD: ADD / EDIT / DELETE (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+    //  CRUD: ADD / EDIT / DELETE
     // ============================================================
     function openAddModal() {
         if (!isAdminMode) {
@@ -1740,6 +1176,7 @@
             renderPopularModels();
             submitBtn.disabled = false;
             submitBtn.textContent = translations[currentLang].btn_save || 'Save';
+            updateDebug();
         }).catch(error => {
             console.error('❌ Error:', error);
             showToast('error', '❌ Error uploading file!');
@@ -1760,6 +1197,8 @@
         }
 
         const beforeCount = modelsData.length;
+        console.log(`🗑️ Deleting model ID: ${id}. Before: ${beforeCount} models`);
+        
         modelsData = modelsData.filter(m => m.id !== id);
         const afterCount = modelsData.length;
         
@@ -1772,8 +1211,10 @@
         nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
         renderModels(currentCategory, document.getElementById('searchInput').value);
         renderPopularModels();
-        showToast('success', translations[currentLang].model_deleted || '🗑️ Model deleted!');
-        console.log(`🗑️ Deleted model ID: ${id}. Remaining: ${modelsData.length}`);
+        
+        showToast('success', `${translations[currentLang].model_deleted || '🗑️ Model deleted!'} Remaining: ${modelsData.length}`);
+        console.log(`🗑️ Deleted. Remaining: ${modelsData.length}`);
+        updateDebug();
     }
 
     // ============================================================
@@ -1789,6 +1230,7 @@
             renderPopularModels();
             showToast('success', translations[currentLang].data_reset || '🗑️ All data has been reset!');
             console.log('🗑️ Data reset');
+            updateDebug();
         }
     }
 
@@ -2009,6 +1451,7 @@
         
         renderModels(currentCategory, document.getElementById('searchInput').value);
         renderPopularModels();
+        updateDebug();
         
         showToast('info', `${currentLang === 'ru' ? '🇷🇺 Русский' : '🇬🇧 English'}`);
     });
@@ -2030,7 +1473,10 @@
     applyTranslations('ru');
     renderModels('all', '');
     renderPopularModels();
+    updateDebug();
     showToast('info', '👋 Добро пожаловать в Mexpanse3D!');
+    console.log('🚀 Mexpanse3D initialized');
+    console.log('📦 Models in memory:', modelsData.length);
 
     document.querySelectorAll('.modal-overlay').forEach(modal => {
         modal.addEventListener('click', function(e) {
