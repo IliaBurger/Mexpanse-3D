@@ -135,6 +135,10 @@
         .debug-panel.active { display: block; }
         .debug-panel .label { font-weight: 700; color: #0057ff; }
         .debug-panel .value { font-weight: 600; }
+        .db-status { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .db-status.ready { background: #00a86b; color: white; }
+        .db-status.loading { background: #ff6b35; color: white; }
+        .db-status.error { background: #dc3545; color: white; }
         @media (max-width: 700px) {
             .header-inner { flex-direction: column; align-items: stretch; gap: 12px; }
             .nav-links { justify-content: center; gap: 14px; }
@@ -167,6 +171,7 @@
             <i class="fas fa-cube"></i> Mexpanse3D
             <span class="free-badge"><i class="fas fa-check-circle"></i> 100% Free</span>
             <span class="admin-mode-badge" id="adminBadge">🔧 Admin</span>
+            <span class="db-status loading" id="dbStatus">⏳ Загрузка...</span>
         </a>
         <div class="nav-links">
             <a class="active" onclick="navigateTo('home')" data-page="home">Главная</a>
@@ -210,8 +215,9 @@
         <div class="debug-panel" id="debugPanel">
             <div><span class="label">📊 Статус:</span> <span class="value" id="debugStatus">✅ Синхронизировано</span></div>
             <div><span class="label">📦 Моделей в памяти:</span> <span class="value" id="debugMemoryCount">0</span></div>
-            <div><span class="label">💾 Моделей в localStorage:</span> <span class="value" id="debugStorageCount">0</span></div>
+            <div><span class="label">💾 Моделей в IndexedDB:</span> <span class="value" id="debugStorageCount">0</span></div>
             <div><span class="label">🔑 Режим админа:</span> <span class="value" id="debugAdminMode">Выключен</span></div>
+            <div><span class="label">💿 Размер БД:</span> <span class="value" id="debugDBSize">0 MB</span></div>
         </div>
         <div class="grid" id="modelGrid"></div>
     </div>
@@ -314,7 +320,6 @@
         <a onclick="clearAllData()" style="color:#dc3545;"><i class="fas fa-database"></i> Сбросить данные</a>
         <a onclick="toggleDebug()" style="color:#0057ff;"><i class="fas fa-bug"></i> Debug</a>
         <a onclick="forceReload()" style="color:#00a86b;"><i class="fas fa-sync"></i> Обновить</a>
-        <a onclick="showStorage()" style="color:#ff6b35;"><i class="fas fa-database"></i> Показать localStorage</a>
     </div>
 </footer>
 
@@ -374,7 +379,7 @@
             <div class="form-group">
                 <label>Загрузить 3D-модель (GLB/OBJ/FBX/STL)</label>
                 <input type="file" id="modelFile" accept=".glb,.obj,.fbx,.stl">
-                <div class="file-info" id="fileInfo"><i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)</div>
+                <div class="file-info" id="fileInfo"><i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (до 500MB)</div>
                 <div class="upload-progress" id="uploadProgress">
                     <div class="bar" id="uploadBar"></div>
                 </div>
@@ -463,6 +468,7 @@
         const panel = document.getElementById('debugPanel');
         if (debugVisible) {
             panel.classList.add('active');
+            getDatabaseSize();
         } else {
             panel.classList.remove('active');
         }
@@ -471,46 +477,36 @@
 
     function updateDebug() {
         if (!debugVisible) return;
-        const storageData = localStorage.getItem('mexpanse_models');
-        let storageCount = 0;
-        if (storageData) {
-            try {
-                const parsed = JSON.parse(storageData);
-                if (Array.isArray(parsed)) storageCount = parsed.length;
-            } catch(e) {}
-        }
         document.getElementById('debugMemoryCount').textContent = modelsData.length;
-        document.getElementById('debugStorageCount').textContent = storageCount;
         document.getElementById('debugAdminMode').textContent = isAdminMode ? '✅ Включен' : '❌ Выключен';
         
         const status = document.getElementById('debugStatus');
-        if (storageCount === modelsData.length) {
-            status.textContent = '✅ Синхронизировано';
+        if (dbReady) {
+            status.textContent = '✅ IndexedDB готова';
             status.style.color = '#00a86b';
         } else {
-            status.textContent = '⚠️ НЕ СИНХРОНИЗИРОВАНО!';
-            status.style.color = '#dc3545';
+            status.textContent = '⏳ Загрузка...';
+            status.style.color = '#ff6b35';
         }
     }
 
-    // ============================================================
-    //  ПОКАЗАТЬ СОДЕРЖИМОЕ localStorage
-    // ============================================================
-    function showStorage() {
-        const data = localStorage.getItem('mexpanse_models');
-        if (data) {
-            try {
-                const parsed = JSON.parse(data);
-                console.log('📦 localStorage содержимое:', parsed);
-                alert('В localStorage сохранено ' + parsed.length + ' моделей.\nОткройте консоль (F12) для просмотра деталей.');
-            } catch(e) {
-                console.error('❌ Ошибка парсинга:', e);
-                alert('Ошибка чтения localStorage');
-            }
-        } else {
-            alert('В localStorage нет данных');
+    async function getDatabaseSize() {
+        try {
+            if (!db) return;
+            const transaction = db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+            
+            request.onsuccess = function(event) {
+                const data = event.target.result;
+                const size = new Blob([JSON.stringify(data)]).size;
+                const sizeMB = (size / (1024 * 1024)).toFixed(2);
+                document.getElementById('debugStorageCount').textContent = data.length;
+                document.getElementById('debugDBSize').textContent = sizeMB + ' MB';
+            };
+        } catch(e) {
+            console.error('Ошибка получения размера БД:', e);
         }
-        updateDebug();
     }
 
     // ============================================================
@@ -562,7 +558,137 @@
     }
 
     // ============================================================
-    //  DATA (with localStorage) - ФИНАЛЬНАЯ ВЕРСИЯ С ПРОВЕРКАМИ
+    //  РАБОТА С ДАННЫМИ ЧЕРЕЗ IndexedDB
+    // ============================================================
+    const DB_NAME = 'MexpanseDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'models';
+
+    let db = null;
+    let dbReady = false;
+    let modelsData = [];
+    let nextId = 1;
+
+    // Открываем базу данных
+    function openDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            
+            request.onupgradeneeded = function(event) {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    store.createIndex('title', 'title', { unique: false });
+                    store.createIndex('category', 'category', { unique: false });
+                    store.createIndex('author', 'author', { unique: false });
+                    console.log('📁 Создана база данных IndexedDB');
+                }
+            };
+            
+            request.onsuccess = function(event) {
+                db = event.target.result;
+                console.log('✅ IndexedDB открыта');
+                document.getElementById('dbStatus').className = 'db-status ready';
+                document.getElementById('dbStatus').textContent = '✅ IndexedDB';
+                resolve(db);
+            };
+            
+            request.onerror = function(event) {
+                console.error('❌ Ошибка открытия IndexedDB:', event.target.error);
+                document.getElementById('dbStatus').className = 'db-status error';
+                document.getElementById('dbStatus').textContent = '❌ Ошибка';
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Загрузка всех моделей из IndexedDB
+    function loadModelsFromDB() {
+        return new Promise((resolve, reject) => {
+            if (!db) {
+                reject(new Error('База данных не открыта'));
+                return;
+            }
+            
+            const transaction = db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+            
+            request.onsuccess = function(event) {
+                const models = event.target.result;
+                console.log('✅ Загружено моделей из IndexedDB:', models.length);
+                resolve(models);
+            };
+            
+            request.onerror = function(event) {
+                console.error('❌ Ошибка загрузки из IndexedDB:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Сохранение моделей в IndexedDB
+    function saveModelsToDB(models) {
+        return new Promise((resolve, reject) => {
+            if (!db) {
+                reject(new Error('База данных не открыта'));
+                return;
+            }
+            
+            // Очищаем старые данные
+            const clearTransaction = db.transaction([STORE_NAME], 'readwrite');
+            const clearStore = clearTransaction.objectStore(STORE_NAME);
+            const clearRequest = clearStore.clear();
+            
+            clearRequest.onsuccess = function() {
+                // Добавляем новые данные
+                const addTransaction = db.transaction([STORE_NAME], 'readwrite');
+                const addStore = addTransaction.objectStore(STORE_NAME);
+                
+                models.forEach(model => {
+                    addStore.add(model);
+                });
+                
+                addTransaction.oncomplete = function() {
+                    console.log('💾 Модели сохранены в IndexedDB:', models.length);
+                    resolve(true);
+                };
+                
+                addTransaction.onerror = function(event) {
+                    console.error('❌ Ошибка сохранения в IndexedDB:', event.target.error);
+                    reject(event.target.error);
+                };
+            };
+            
+            clearTransaction.onerror = function(event) {
+                console.error('❌ Ошибка очистки IndexedDB:', event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+    // Получение размера базы данных
+    function getDatabaseSize() {
+        try {
+            if (!db) return;
+            const transaction = db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+            
+            request.onsuccess = function(event) {
+                const data = event.target.result;
+                const size = new Blob([JSON.stringify(data)]).size;
+                const sizeMB = (size / (1024 * 1024)).toFixed(2);
+                document.getElementById('debugStorageCount').textContent = data.length;
+                document.getElementById('debugDBSize').textContent = sizeMB + ' MB';
+            };
+        } catch(e) {
+            console.error('Ошибка получения размера БД:', e);
+        }
+    }
+
+    // ============================================================
+    //  ДЕФОЛТНЫЕ МОДЕЛИ
     // ============================================================
     function getDefaultModels() {
         return [
@@ -578,63 +704,75 @@
         ];
     }
 
-    // ГЛАВНАЯ ФУНКЦИЯ ЗАГРУЗКИ
-    function loadModels() {
-        const stored = localStorage.getItem('mexpanse_models');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                if (parsed && Array.isArray(parsed) && parsed.length > 0) {
-                    console.log('✅ Модели загружены из localStorage:', parsed.length);
-                    return parsed;
-                }
-            } catch(e) {
-                console.warn('⚠️ Ошибка парсинга localStorage:', e);
-            }
-        }
-        const defaults = getDefaultModels();
-        localStorage.setItem('mexpanse_models', JSON.stringify(defaults));
-        console.log('✅ Созданы дефолтные модели');
-        return defaults;
-    }
-
-    // ФУНКЦИЯ СОХРАНЕНИЯ С ПРОВЕРКОЙ
-    function saveModels(models) {
+    // ============================================================
+    //  СОХРАНЕНИЕ (АСИНХРОННОЕ)
+    // ============================================================
+    async function saveModels(models) {
         try {
-            const jsonData = JSON.stringify(models);
-            localStorage.setItem('mexpanse_models', jsonData);
-            
-            // ПРОВЕРКА: читаем обратно
-            const saved = localStorage.getItem('mexpanse_models');
-            if (saved === jsonData) {
-                console.log('💾 Модели УСПЕШНО сохранены в localStorage:', models.length);
-                updateDebug();
-                return true;
-            } else {
-                console.error('❌ Ошибка: данные в localStorage не совпадают!');
-                showToast('error', '❌ Ошибка сохранения данных!');
-                return false;
+            if (!dbReady) {
+                console.warn('⚠️ База данных не готова, пытаемся открыть...');
+                await openDB();
+                dbReady = true;
             }
-        } catch(e) {
-            console.error('❌ Ошибка сохранения в localStorage:', e);
+            const result = await saveModelsToDB(models);
+            console.log('💾 Модели сохранены в IndexedDB:', models.length);
+            updateDebug();
+            getDatabaseSize();
+            return result;
+        } catch(error) {
+            console.error('❌ Ошибка сохранения:', error);
             showToast('error', '❌ Ошибка сохранения данных!');
             return false;
         }
     }
 
-    let modelsData = loadModels();
-    let nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
-
-    function formatFileSize(bytes) {
-        if (!bytes) return '0 B';
-        const sizes = ['B', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(1024));
-        return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+    // ============================================================
+    //  ИНИЦИАЛИЗАЦИЯ БАЗЫ ДАННЫХ
+    // ============================================================
+    async function initDB() {
+        try {
+            await openDB();
+            dbReady = true;
+            
+            // Пытаемся загрузить данные
+            const loaded = await loadModelsFromDB();
+            
+            if (loaded && loaded.length > 0) {
+                modelsData = loaded;
+                console.log('✅ Данные загружены из IndexedDB:', modelsData.length);
+            } else {
+                // Если данных нет - создаём дефолтные
+                modelsData = getDefaultModels();
+                await saveModelsToDB(modelsData);
+                console.log('✅ Созданы дефолтные модели в IndexedDB');
+            }
+            
+            nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
+            
+            // Обновляем интерфейс
+            renderModels(currentCategory, '');
+            renderPopularModels();
+            updateDebug();
+            getDatabaseSize();
+            
+            console.log('🚀 Mexpanse3D готов! Моделей:', modelsData.length);
+            
+        } catch(error) {
+            console.error('❌ Ошибка инициализации базы данных:', error);
+            showToast('error', '❌ Ошибка загрузки базы данных! Использую резервные данные.');
+            
+            // Fallback на дефолтные модели
+            modelsData = getDefaultModels();
+            renderModels(currentCategory, '');
+            renderPopularModels();
+            updateDebug();
+        }
     }
 
     // ============================================================
-    //  STATE - С СОХРАНЕНИЕМ В localStorage
+    //  STATE
     // ============================================================
+    let currentCategory = 'all';
     let isAdminMode = false;
     let subscribed = false;
     let currentPreviewModel = null;
@@ -713,7 +851,6 @@
     // ============================================================
     //  RENDER HOME GRID
     // ============================================================
-    let currentCategory = 'all';
     const grid = document.getElementById('modelGrid');
 
     function renderModels(category = 'all', searchQuery = '') {
@@ -811,7 +948,7 @@
         document.getElementById('modelIcon').value = 'fa-cube';
         document.getElementById('modelFile').value = '';
         document.getElementById('modelPreview').value = '';
-        document.getElementById('fileInfo').innerHTML = '<i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)';
+        document.getElementById('fileInfo').innerHTML = '<i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (до 500MB)';
         document.getElementById('uploadProgress').classList.remove('active');
         document.getElementById('uploadBar').style.width = '0%';
         document.getElementById('adminSubmitBtn').textContent = 'Сохранить';
@@ -835,7 +972,7 @@
         document.getElementById('modelPreview').value = '';
         document.getElementById('fileInfo').innerHTML = model.fileData ? 
             `<i class="fas fa-check-circle" style="color:#00a86b;"></i> Файл загружен (${formatFileSize(model.fileSize)})` :
-            '<i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)';
+            '<i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (до 500MB)';
         document.getElementById('uploadProgress').classList.remove('active');
         document.getElementById('uploadBar').style.width = '0%';
         document.getElementById('adminSubmitBtn').textContent = 'Сохранить';
@@ -847,28 +984,17 @@
         document.getElementById('adminModal').classList.remove('active');
     }
 
-    const MAX_FILE_SIZE = 50 * 1024 * 1024;
+    function formatFileSize(bytes) {
+        if (!bytes) return '0 B';
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
+    }
 
-    document.getElementById('modelFile').addEventListener('change', function(e) {
-        const file = this.files[0];
-        if (file) {
-            if (file.size > MAX_FILE_SIZE) {
-                showToast('error', '❌ Файл слишком большой! Максимум 50MB');
-                this.value = '';
-                return;
-            }
-            const ext = file.name.split('.').pop().toLowerCase();
-            const validExts = ['glb', 'obj', 'fbx', 'stl'];
-            if (!validExts.includes(ext)) {
-                showToast('error', '❌ Неподдерживаемый формат! Используйте GLB, OBJ, FBX или STL');
-                this.value = '';
-                return;
-            }
-            document.getElementById('fileInfo').innerHTML = `<i class="fas fa-file"></i> ${file.name} (${formatFileSize(file.size)})`;
-        }
-    });
-
-    document.getElementById('adminForm').addEventListener('submit', function(e) {
+    // ============================================================
+    //  ОБРАБОТЧИК ФОРМЫ С ИСПОЛЬЗОВАНИЕМ IndexedDB
+    // ============================================================
+    document.getElementById('adminForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const id = document.getElementById('editId').value;
         const name = document.getElementById('modelName').value.trim();
@@ -887,6 +1013,12 @@
         const submitBtn = document.getElementById('adminSubmitBtn');
         submitBtn.disabled = true;
         submitBtn.textContent = '⏳ Загрузка...';
+
+        // Показываем прогресс
+        const progress = document.getElementById('uploadProgress');
+        const bar = document.getElementById('uploadBar');
+        progress.classList.add('active');
+        bar.style.width = '10%';
 
         let fileData = null;
         let fileSize = null;
@@ -909,10 +1041,16 @@
             });
         };
 
-        Promise.all([
-            readFile(fileInput),
-            readFile(previewInput)
-        ]).then(([fileResult, previewResult]) => {
+        try {
+            bar.style.width = '30%';
+            
+            const [fileResult, previewResult] = await Promise.all([
+                readFile(fileInput),
+                readFile(previewInput)
+            ]);
+            
+            bar.style.width = '60%';
+
             if (fileInput.files && fileInput.files[0]) {
                 fileData = fileResult;
                 fileSize = fileInput.files[0].size;
@@ -921,6 +1059,8 @@
             if (previewInput.files && previewInput.files[0]) {
                 previewData = previewResult;
             }
+
+            bar.style.width = '80%';
 
             if (id) {
                 const index = modelsData.findIndex(m => m.id === parseInt(id));
@@ -940,6 +1080,7 @@
                     showToast('error', '❌ Модель не найдена!');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Сохранить';
+                    progress.classList.remove('active');
                     return;
                 }
             } else {
@@ -958,28 +1099,41 @@
                 showToast('success', '✅ Модель добавлена!');
             }
 
-            // СОХРАНЯЕМ
-            const saved = saveModels(modelsData);
+            bar.style.width = '90%';
+
+            // СОХРАНЯЕМ В IndexedDB
+            const saved = await saveModels(modelsData);
+            
+            bar.style.width = '100%';
+
             if (saved) {
                 closeAdminModal();
                 renderModels(currentCategory, document.getElementById('searchInput').value);
                 renderPopularModels();
+                showToast('success', '✅ Данные сохранены в IndexedDB!');
+            } else {
+                showToast('error', '❌ Ошибка сохранения данных!');
             }
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Сохранить';
-            updateDebug();
-        }).catch(error => {
+
+        } catch(error) {
             console.error('❌ Ошибка:', error);
             showToast('error', '❌ Ошибка при загрузке файла!');
+        } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Сохранить';
-        });
+            setTimeout(() => {
+                progress.classList.remove('active');
+                bar.style.width = '0%';
+            }, 1000);
+            updateDebug();
+            getDatabaseSize();
+        }
     });
 
     // ============================================================
-    //  УДАЛЕНИЕ МОДЕЛИ - ФИНАЛЬНАЯ ВЕРСИЯ
+    //  УДАЛЕНИЕ МОДЕЛИ
     // ============================================================
-    function deleteModel(id) {
+    async function deleteModel(id) {
         if (!isAdminMode) {
             showToast('error', '⚠️ Войдите в режим администратора!');
             return;
@@ -992,17 +1146,11 @@
         console.log('🗑️ Удаление модели ID:', id);
         console.log('📦 Моделей ДО удаления:', modelsData.length);
 
-        // Находим модель для отладки
-        const deletedModel = modelsData.find(m => m.id === id);
-        console.log('🗑️ Удаляемая модель:', deletedModel?.title);
-
-        // Удаляем
         modelsData = modelsData.filter(m => m.id !== id);
         
         console.log('📦 Моделей ПОСЛЕ удаления:', modelsData.length);
 
-        // СОХРАНЯЕМ
-        const saved = saveModels(modelsData);
+        const saved = await saveModels(modelsData);
         
         if (saved) {
             nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
@@ -1013,52 +1161,65 @@
             showToast('error', '❌ Ошибка сохранения после удаления!');
         }
         
-        console.log('✅ Удаление завершено. Осталось:', modelsData.length);
         updateDebug();
+        getDatabaseSize();
     }
 
     // ============================================================
     //  СБРОС ДАННЫХ
     // ============================================================
-    function clearAllData() {
+    async function clearAllData() {
         if (confirm('⚠️ Удалить все данные и сбросить кэш? Это действие нельзя отменить!')) {
-            localStorage.removeItem('mexpanse_models');
-            localStorage.removeItem(ADMIN_STORAGE_KEY);
-            modelsData = getDefaultModels();
-            saveModels(modelsData);
-            nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
-            isAdminMode = false;
-            updateAdminUI();
-            renderModels(currentCategory, '');
-            renderPopularModels();
-            showToast('success', '🗑️ Все данные сброшены!');
-            console.log('🗑️ Data reset');
-            updateDebug();
+            try {
+                if (db) {
+                    const transaction = db.transaction([STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    await new Promise((resolve, reject) => {
+                        const request = store.clear();
+                        request.onsuccess = resolve;
+                        request.onerror = reject;
+                    });
+                }
+                
+                localStorage.removeItem(ADMIN_STORAGE_KEY);
+                
+                modelsData = getDefaultModels();
+                await saveModels(modelsData);
+                nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
+                isAdminMode = false;
+                updateAdminUI();
+                renderModels(currentCategory, '');
+                renderPopularModels();
+                showToast('success', '🗑️ Данные сброшены к дефолтным!');
+                console.log('🗑️ Data reset');
+                updateDebug();
+                getDatabaseSize();
+            } catch(error) {
+                console.error('❌ Ошибка сброса:', error);
+                showToast('error', '❌ Ошибка сброса данных!');
+            }
         }
     }
 
     // ============================================================
-    //  ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ ИЗ localStorage
+    //  ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ
     // ============================================================
-    function forceReload() {
-        const stored = localStorage.getItem('mexpanse_models');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                if (parsed && Array.isArray(parsed)) {
-                    const oldCount = modelsData.length;
-                    modelsData = parsed;
-                    nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
-                    renderModels(currentCategory, document.getElementById('searchInput').value);
-                    renderPopularModels();
-                    showToast('success', `🔄 Данные обновлены! Было: ${oldCount}, стало: ${modelsData.length}`);
-                    console.log('🔄 Принудительное обновление из localStorage');
-                    updateDebug();
-                    return;
-                }
-            } catch(e) {
-                console.error('❌ Ошибка при обновлении:', e);
+    async function forceReload() {
+        try {
+            const loaded = await loadModelsFromDB();
+            if (loaded && loaded.length > 0) {
+                modelsData = loaded;
+                nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
+                renderModels(currentCategory, document.getElementById('searchInput').value);
+                renderPopularModels();
+                showToast('success', `🔄 Данные обновлены! Моделей: ${modelsData.length}`);
+                console.log('🔄 Принудительное обновление из IndexedDB');
+                updateDebug();
+                getDatabaseSize();
+                return;
             }
+        } catch(e) {
+            console.error('❌ Ошибка при обновлении:', e);
         }
         showToast('error', '❌ Не удалось обновить данные!');
     }
@@ -1290,21 +1451,22 @@
     // ============================================================
     //  INIT
     // ============================================================
+    // Запускаем инициализацию базы данных
+    initDB();
+
+    // Восстанавливаем состояние админа
     updateAdminUI();
-    renderModels('all', '');
-    renderPopularModels();
-    updateDebug();
     
-    if (isAdminMode) {
-        showToast('success', '🔓 Вы вошли как администратор!');
-    } else {
-        showToast('info', '👋 Добро пожаловать в Mexpanse3D!');
-    }
+    // Показываем приветствие
+    setTimeout(() => {
+        if (isAdminMode) {
+            showToast('success', '🔓 Вы вошли как администратор!');
+        } else {
+            showToast('info', '👋 Добро пожаловать в Mexpanse3D!');
+        }
+    }, 1000);
     
-    console.log('🚀 Mexpanse3D инициализирован');
-    console.log('📦 Моделей в памяти:', modelsData.length);
-    console.log('💾 Моделей в localStorage:', JSON.parse(localStorage.getItem('mexpanse_models') || '[]').length);
-    console.log('🔑 Режим админа:', isAdminMode ? 'Включен' : 'Выключен');
+    console.log('🚀 Mexpanse3D инициализирован с IndexedDB');
 
     document.querySelectorAll('.modal-overlay').forEach(modal => {
         modal.addEventListener('click', function(e) {
