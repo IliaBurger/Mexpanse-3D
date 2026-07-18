@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="Mexpress 3D is your one-stop destination for 3D solutions. We specialize in printing, design, and custom models. Quality service at competitive prices.">
+    <meta name="description" content="Mexpanse3D is your one-stop destination for 3D solutions. We specialize in printing, design, and custom models. Quality service at competitive prices.">
     <title>Mexpanse3D · Free 3D Models</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -938,6 +938,7 @@
         <a onclick="showToast('info', 'ℹ️ О проекте Mexpanse3D')" data-i18n="footer_about">О нас</a>
         <a onclick="showToast('info', '❓ Часто задаваемые вопросы')" data-i18n="footer_faq">FAQ</a>
         <a onclick="showToast('info', '🐙 GitHub репозиторий')"><i class="fab fa-github"></i> GitHub</a>
+        <a onclick="clearAllData()" style="color:#dc3545;"><i class="fas fa-database"></i> Сбросить данные</a>
     </div>
 </footer>
 
@@ -1144,7 +1145,8 @@
             subscribe_success: '✅ Спасибо! Теперь вы можете скачивать любые модели.',
             download_started: '⬇️ Скачивание "{title}" начато!',
             file_uploaded: 'Файл загружен',
-            read_full: '📖 Читать полную статью...'
+            read_full: '📖 Читать полную статью...',
+            data_reset: '🗑️ Все данные сброшены!'
         },
         en: {
             badge_free: '100% Free',
@@ -1249,7 +1251,8 @@
             subscribe_success: '✅ Thank you! Now you can download any models.',
             download_started: '⬇️ Downloading "{title}" started!',
             file_uploaded: 'File uploaded',
-            read_full: '📖 Read full article...'
+            read_full: '📖 Read full article...',
+            data_reset: '🗑️ All data has been reset!'
         }
     };
 
@@ -1279,7 +1282,6 @@
             }
         });
 
-        // Update admin modal title dynamically
         const editId = document.getElementById('editId').value;
         if (editId) {
             document.getElementById('adminModalTitle').innerHTML = `<i class="fas fa-pen"></i> ${t.admin_edit_title || 'Edit Model'}`;
@@ -1287,15 +1289,9 @@
             document.getElementById('adminModalTitle').innerHTML = `<i class="fas fa-plus-circle"></i> ${t.admin_add_title || 'Add Model'}`;
         }
 
-        // Update admin submit button
         const submitBtn = document.getElementById('adminSubmitBtn');
-        if (editId) {
-            submitBtn.textContent = t.btn_save || 'Save';
-        } else {
-            submitBtn.textContent = t.btn_save || 'Save';
-        }
+        submitBtn.textContent = t.btn_save || 'Save';
 
-        // Update filter chips (they have data-i18n but also need to keep data-cat)
         document.querySelectorAll('.filter-chip[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (t[key]) {
@@ -1303,7 +1299,6 @@
             }
         });
 
-        // Update footer year
         const footerYear = document.querySelector('.footer div:first-child');
         if (footerYear) {
             const year = new Date().getFullYear();
@@ -1352,16 +1347,6 @@
         }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        const pageNames = {
-            home: translations[currentLang].nav_home || '🏠 Home',
-            popular: translations[currentLang].nav_popular || '⭐ Popular',
-            license: translations[currentLang].nav_license || '📄 License',
-            blog: translations[currentLang].nav_blog || '📝 Blog'
-        };
-        if (pageNames[page]) {
-            showToast('info', pageNames[page]);
-        }
     }
 
     // ============================================================
@@ -1412,7 +1397,7 @@
     }
 
     // ============================================================
-    //  DATA (with localStorage)
+    //  DATA (with localStorage) - ИСПРАВЛЕННАЯ ВЕРСИЯ
     // ============================================================
     function getDefaultModels() {
         return [
@@ -1433,16 +1418,28 @@
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
-                if (parsed && parsed.length > 0) return parsed;
-            } catch(e) {}
+                if (parsed && Array.isArray(parsed) && parsed.length > 0) {
+                    console.log('✅ Модели загружены из localStorage:', parsed.length);
+                    return parsed;
+                }
+            } catch(e) {
+                console.warn('⚠️ Ошибка парсинга localStorage:', e);
+            }
         }
         const defaults = getDefaultModels();
         localStorage.setItem('mexpanse_models', JSON.stringify(defaults));
+        console.log('✅ Созданы дефолтные модели');
         return defaults;
     }
 
     function saveModels(models) {
-        localStorage.setItem('mexpanse_models', JSON.stringify(models));
+        try {
+            localStorage.setItem('mexpanse_models', JSON.stringify(models));
+            console.log('💾 Модели сохранены в localStorage:', models.length);
+        } catch(e) {
+            console.error('❌ Ошибка сохранения в localStorage:', e);
+            showToast('error', '❌ Ошибка сохранения данных!');
+        }
     }
 
     let modelsData = loadModels();
@@ -1574,7 +1571,7 @@
     });
 
     // ============================================================
-    //  CRUD: ADD / EDIT / DELETE with file upload
+    //  CRUD: ADD / EDIT / DELETE (ИСПРАВЛЕННАЯ ВЕРСИЯ)
     // ============================================================
     function openAddModal() {
         if (!isAdminMode) {
@@ -1715,6 +1712,11 @@
                         ...(previewData !== null ? { previewData } : {})
                     };
                     showToast('success', translations[currentLang].model_updated || '✅ Model updated!');
+                } else {
+                    showToast('error', '❌ Model not found!');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = translations[currentLang].btn_save || 'Save';
+                    return;
                 }
             } else {
                 const newModel = {
@@ -1735,19 +1737,59 @@
             saveModels(modelsData);
             closeAdminModal();
             renderModels(currentCategory, document.getElementById('searchInput').value);
+            renderPopularModels();
+            submitBtn.disabled = false;
+            submitBtn.textContent = translations[currentLang].btn_save || 'Save';
+        }).catch(error => {
+            console.error('❌ Error:', error);
+            showToast('error', '❌ Error uploading file!');
             submitBtn.disabled = false;
             submitBtn.textContent = translations[currentLang].btn_save || 'Save';
         });
     });
 
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ УДАЛЕНИЯ
     function deleteModel(id) {
-        if (!isAdminMode) return;
-        if (!confirm(translations[currentLang].model_delete_confirm || 'Delete this model?')) return;
+        if (!isAdminMode) {
+            showToast('error', translations[currentLang].admin_error || '⚠️ Please enter admin mode!');
+            return;
+        }
+        
+        if (!confirm(translations[currentLang].model_delete_confirm || 'Delete this model?')) {
+            return;
+        }
 
+        const beforeCount = modelsData.length;
         modelsData = modelsData.filter(m => m.id !== id);
+        const afterCount = modelsData.length;
+        
+        if (beforeCount === afterCount) {
+            showToast('error', '❌ Model not found!');
+            return;
+        }
+        
         saveModels(modelsData);
+        nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
         renderModels(currentCategory, document.getElementById('searchInput').value);
+        renderPopularModels();
         showToast('success', translations[currentLang].model_deleted || '🗑️ Model deleted!');
+        console.log(`🗑️ Deleted model ID: ${id}. Remaining: ${modelsData.length}`);
+    }
+
+    // ============================================================
+    //  СБРОС ДАННЫХ
+    // ============================================================
+    function clearAllData() {
+        if (confirm('⚠️ ' + (translations[currentLang].model_delete_confirm || 'Delete all data? This cannot be undone!'))) {
+            localStorage.removeItem('mexpanse_models');
+            modelsData = getDefaultModels();
+            saveModels(modelsData);
+            nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
+            renderModels(currentCategory, '');
+            renderPopularModels();
+            showToast('success', translations[currentLang].data_reset || '🗑️ All data has been reset!');
+            console.log('🗑️ Data reset');
+        }
     }
 
     // ============================================================
@@ -1965,16 +2007,9 @@
         this.textContent = currentLang === 'ru' ? 'EN / RU' : 'RU / EN';
         applyTranslations(currentLang);
         
-        // Re-render models to update button texts
         renderModels(currentCategory, document.getElementById('searchInput').value);
         renderPopularModels();
         
-        const pageNames = {
-            home: translations[currentLang].nav_home || '🏠 Home',
-            popular: translations[currentLang].nav_popular || '⭐ Popular',
-            license: translations[currentLang].nav_license || '📄 License',
-            blog: translations[currentLang].nav_blog || '📝 Blog'
-        };
         showToast('info', `${currentLang === 'ru' ? '🇷🇺 Русский' : '🇬🇧 English'}`);
     });
 
