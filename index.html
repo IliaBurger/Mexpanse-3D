@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Mexpanse3D is your one-stop destination for 3D solutions.">
     <title>Mexpanse3D · Free 3D Models</title>
-    <!-- ОТКЛЮЧАЕМ КЭШИРОВАНИЕ -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -131,6 +130,10 @@
         .upload-progress .bar { height: 100%; background: #0057ff; width: 0%; transition: width 0.3s; border-radius: 4px; }
         .upload-progress.active { display: block; }
         .model-thumb { width: 100%; height: 100%; object-fit: cover; }
+        .debug-panel { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-family: monospace; font-size: 13px; overflow-x: auto; display: none; }
+        .debug-panel.active { display: block; }
+        .debug-panel .label { font-weight: 700; color: #0057ff; }
+        .debug-panel .value { font-weight: 600; }
         @media (max-width: 700px) {
             .header-inner { flex-direction: column; align-items: stretch; gap: 12px; }
             .nav-links { justify-content: center; gap: 14px; }
@@ -165,15 +168,15 @@
             <span class="admin-mode-badge" id="adminBadge">🔧 Admin</span>
         </a>
         <div class="nav-links">
-            <a class="active" onclick="navigateTo('home')" data-page="home">Главная</a>
-            <a onclick="navigateTo('popular')" data-page="popular">Популярное</a>
-            <a onclick="navigateTo('license')" data-page="license">Лицензия</a>
-            <a onclick="navigateTo('blog')" data-page="blog">Блог</a>
+            <a class="active" onclick="navigateTo('home')" data-page="home" data-i18n="nav_home">Главная</a>
+            <a onclick="navigateTo('popular')" data-page="popular" data-i18n="nav_popular">Популярное</a>
+            <a onclick="navigateTo('license')" data-page="license" data-i18n="nav_license">Лицензия</a>
+            <a onclick="navigateTo('blog')" data-page="blog" data-i18n="nav_blog">Блог</a>
         </div>
         <div class="header-actions">
             <button class="lang-toggle" id="langToggle">EN / RU</button>
-            <button class="btn-admin" id="adminToggleBtn"><i class="fas fa-shield-alt"></i> Admin</button>
-            <button class="btn-primary" onclick="openAddModal()"><i class="fas fa-upload"></i> Загрузить</button>
+            <button class="btn-admin" id="adminToggleBtn"><i class="fas fa-shield-alt"></i> <span data-i18n="btn_admin">Admin</span></button>
+            <button class="btn-primary" onclick="openAddModal()"><i class="fas fa-upload"></i> <span data-i18n="btn_upload">Загрузить</span></button>
         </div>
     </div>
 </header>
@@ -181,28 +184,34 @@
 <!-- PAGE: HOME -->
 <div class="page-section active" id="page-home">
     <section class="hero container">
-        <h1>Бесплатные 3D-модели</h1>
-        <p>Высококачественные .glb, .obj, .fbx от сообщества. Свободно для коммерции.</p>
+        <h1 data-i18n="hero_title">Бесплатные 3D-модели</h1>
+        <p data-i18n="hero_desc">Высококачественные .glb, .obj, .fbx от сообщества. Свободно для коммерции.</p>
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" placeholder="Поиск модели..." id="searchInput">
-            <button onclick="filterModels()">Найти</button>
+            <input type="text" placeholder="Поиск модели..." id="searchInput" data-i18n-placeholder="search_placeholder">
+            <button onclick="filterModels()" data-i18n="search_btn">Найти</button>
         </div>
     </section>
 
     <div class="container">
         <div class="filters" id="filtersContainer">
-            <span class="label"><i class="fas fa-sliders-h"></i> Категории:</span>
-            <button class="filter-chip active" data-cat="all">Все</button>
-            <button class="filter-chip" data-cat="tech">Техника</button>
-            <button class="filter-chip" data-cat="furniture">Мебель</button>
-            <button class="filter-chip" data-cat="character">Персонажи</button>
-            <button class="filter-chip" data-cat="nature">Природа</button>
-            <button class="filter-chip" data-cat="arch">Архитектура</button>
+            <span class="label"><i class="fas fa-sliders-h"></i> <span data-i18n="categories_label">Категории:</span></span>
+            <button class="filter-chip active" data-cat="all" data-i18n="cat_all">Все</button>
+            <button class="filter-chip" data-cat="tech" data-i18n="cat_tech">Техника</button>
+            <button class="filter-chip" data-cat="furniture" data-i18n="cat_furniture">Мебель</button>
+            <button class="filter-chip" data-cat="character" data-i18n="cat_character">Персонажи</button>
+            <button class="filter-chip" data-cat="nature" data-i18n="cat_nature">Природа</button>
+            <button class="filter-chip" data-cat="arch" data-i18n="cat_arch">Архитектура</button>
         </div>
     </div>
 
     <div class="container">
+        <div class="debug-panel" id="debugPanel">
+            <div><span class="label">📊 Статус:</span> <span class="value" id="debugStatus">✅ Синхронизировано</span></div>
+            <div><span class="label">📦 Моделей в памяти:</span> <span class="value" id="debugMemoryCount">0</span></div>
+            <div><span class="label">💾 Моделей в localStorage:</span> <span class="value" id="debugStorageCount">0</span></div>
+            <div><span class="label">🔑 Режим админа:</span> <span class="value" id="debugAdminMode">Выключен</span></div>
+        </div>
         <div class="grid" id="modelGrid"></div>
     </div>
 </div>
@@ -210,8 +219,8 @@
 <!-- PAGE: POPULAR -->
 <div class="page-section" id="page-popular">
     <div class="container page-content">
-        <h1>⭐ Популярные модели</h1>
-        <p>Самые скачиваемые и просматриваемые 3D-модели сообщества Mexpanse3D.</p>
+        <h1 data-i18n="popular_title">⭐ Популярные модели</h1>
+        <p data-i18n="popular_desc">Самые скачиваемые и просматриваемые 3D-модели сообщества Mexpanse3D.</p>
         <div class="grid" id="popularGrid"></div>
     </div>
 </div>
@@ -219,39 +228,39 @@
 <!-- PAGE: LICENSE -->
 <div class="page-section" id="page-license">
     <div class="container page-content">
-        <h1>📄 Лицензия</h1>
-        <p>Все модели на Mexpanse3D распространяются по лицензии <strong>Creative Commons Zero (CC0)</strong>.</p>
+        <h1 data-i18n="license_title">📄 Лицензия</h1>
+        <p data-i18n="license_intro">Все модели на Mexpanse3D распространяются по лицензии <strong>Creative Commons Zero (CC0)</strong>.</p>
         <div class="license-section">
-            <h3><i class="fas fa-check-circle" style="color:#00a86b;"></i> Что разрешено</h3>
+            <h3><i class="fas fa-check-circle" style="color:#00a86b;"></i> <span data-i18n="license_allowed_title">Что разрешено</span></h3>
             <ul>
-                <li>✅ Скачивание и использование в личных и коммерческих проектах</li>
-                <li>✅ Модификация и адаптация моделей под свои нужды</li>
-                <li>✅ Публикация работ с использованием моделей (с указанием авторства или без)</li>
-                <li>✅ Продажа продуктов, в которых используются эти модели</li>
+                <li data-i18n="license_allowed_1">✅ Скачивание и использование в личных и коммерческих проектах</li>
+                <li data-i18n="license_allowed_2">✅ Модификация и адаптация моделей под свои нужды</li>
+                <li data-i18n="license_allowed_3">✅ Публикация работ с использованием моделей (с указанием авторства или без)</li>
+                <li data-i18n="license_allowed_4">✅ Продажа продуктов, в которых используются эти модели</li>
             </ul>
         </div>
         <div class="license-section" style="border-left-color:#dc3545;">
-            <h3><i class="fas fa-times-circle" style="color:#dc3545;"></i> Что запрещено</h3>
+            <h3><i class="fas fa-times-circle" style="color:#dc3545;"></i> <span data-i18n="license_forbidden_title">Что запрещено</span></h3>
             <ul>
-                <li>❌ Перепродажа моделей в неизменном виде как самостоятельного продукта</li>
-                <li>❌ Выдача моделей за свои собственные (плагиат)</li>
-                <li>❌ Использование в запрещённых или незаконных целях</li>
+                <li data-i18n="license_forbidden_1">❌ Перепродажа моделей в неизменном виде как самостоятельного продукта</li>
+                <li data-i18n="license_forbidden_2">❌ Выдача моделей за свои собственные (плагиат)</li>
+                <li data-i18n="license_forbidden_3">❌ Использование в запрещённых или незаконных целях</li>
             </ul>
         </div>
         <div class="license-section" style="border-left-color:#ff6b35;">
-            <h3><i class="fas fa-heart" style="color:#ff6b35;"></i> Благодарность</h3>
-            <p>Хотя это и не обязательно, мы будем рады, если вы укажете авторство и поставите ссылку на Mexpanse3D в своих проектах. Это помогает сообществу расти! 🙌</p>
+            <h3><i class="fas fa-heart" style="color:#ff6b35;"></i> <span data-i18n="license_thanks_title">Благодарность</span></h3>
+            <p data-i18n="license_thanks_desc">Хотя это и не обязательно, мы будем рады, если вы укажете авторство и поставите ссылку на Mexpanse3D в своих проектах. Это помогает сообществу расти! 🙌</p>
         </div>
-        <h2>Форматы файлов</h2>
-        <p>Мы поддерживаем следующие форматы 3D-моделей:</p>
+        <h2 data-i18n="license_formats_title">Форматы файлов</h2>
+        <p data-i18n="license_formats_desc">Мы поддерживаем следующие форматы 3D-моделей:</p>
         <ul>
-            <li><span class="tag">GLB</span> — универсальный формат для веба и игр</li>
-            <li><span class="tag">OBJ</span> — классический формат для 3D-редакторов</li>
-            <li><span class="tag">FBX</span> — формат для анимации и игровых движков</li>
-            <li><span class="tag">STL</span> — формат для 3D-печати</li>
+            <li><span class="tag">GLB</span> <span data-i18n="format_glb">— универсальный формат для веба и игр</span></li>
+            <li><span class="tag">OBJ</span> <span data-i18n="format_obj">— классический формат для 3D-редакторов</span></li>
+            <li><span class="tag">FBX</span> <span data-i18n="format_fbx">— формат для анимации и игровых движков</span></li>
+            <li><span class="tag">STL</span> <span data-i18n="format_stl">— формат для 3D-печати</span></li>
         </ul>
-        <h2>Контакты</h2>
-        <p>По вопросам лицензирования и сотрудничества пишите нам:</p>
+        <h2 data-i18n="license_contacts_title">Контакты</h2>
+        <p data-i18n="license_contacts_desc">По вопросам лицензирования и сотрудничества пишите нам:</p>
         <ul>
             <li>📧 Email: <a href="mailto:legal@mexpanse3d.com" style="color:#0057ff;text-decoration:none;">legal@mexpanse3d.com</a></li>
             <li>📱 Telegram: <a href="https://t.me/Mexpanse3D" style="color:#0057ff;text-decoration:none;">@mexpanse3d_channel</a></li>
@@ -262,30 +271,30 @@
 <!-- PAGE: BLOG -->
 <div class="page-section" id="page-blog">
     <div class="container page-content">
-        <h1>📝 Блог о 3D</h1>
-        <p>Новости, туториалы и обзоры из мира 3D-моделирования.</p>
+        <h1 data-i18n="blog_title">📝 Блог о 3D</h1>
+        <p data-i18n="blog_desc">Новости, туториалы и обзоры из мира 3D-моделирования.</p>
         <div class="blog-card">
-            <div class="date">📅 15 июля 2025</div>
-            <h3>Как выбрать формат 3D-модели для своего проекта</h3>
-            <p>Разбираемся в особенностях форматов GLB, OBJ, FBX и STL. Узнайте, какой формат подходит для игр, 3D-печати и веб-приложений. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;">Читать далее →</a></p>
+            <div class="date" data-i18n="blog_date_1">📅 15 июля 2025</div>
+            <h3 data-i18n="blog_title_1">Как выбрать формат 3D-модели для своего проекта</h3>
+            <p data-i18n="blog_desc_1">Разбираемся в особенностях форматов GLB, OBJ, FBX и STL. Узнайте, какой формат подходит для игр, 3D-печати и веб-приложений. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;" data-i18n="blog_read_more">Читать далее →</a></p>
         </div>
         <div class="blog-card">
-            <div class="date">📅 8 июля 2025</div>
-            <h3>Топ-5 инструментов для создания 3D-моделей</h3>
-            <p>Обзор лучших бесплатных и платных программ для 3D-моделирования: от Blender до ZBrush. Советы для новичков и профессионалов. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;">Читать далее →</a></p>
+            <div class="date" data-i18n="blog_date_2">📅 8 июля 2025</div>
+            <h3 data-i18n="blog_title_2">Топ-5 инструментов для создания 3D-моделей</h3>
+            <p data-i18n="blog_desc_2">Обзор лучших бесплатных и платных программ для 3D-моделирования: от Blender до ZBrush. Советы для новичков и профессионалов. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;" data-i18n="blog_read_more">Читать далее →</a></p>
         </div>
         <div class="blog-card">
-            <div class="date">📅 1 июля 2025</div>
-            <h3>Как оптимизировать 3D-модели для игр</h3>
-            <p>Практические советы по снижению полигонов, оптимизации текстур и подготовке моделей для Unity и Unreal Engine. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;">Читать далее →</a></p>
+            <div class="date" data-i18n="blog_date_3">📅 1 июля 2025</div>
+            <h3 data-i18n="blog_title_3">Как оптимизировать 3D-модели для игр</h3>
+            <p data-i18n="blog_desc_3">Практические советы по снижению полигонов, оптимизации текстур и подготовке моделей для Unity и Unreal Engine. <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;" data-i18n="blog_read_more">Читать далее →</a></p>
         </div>
         <div class="blog-card">
-            <div class="date">📅 24 июня 2025</div>
-            <h3>Знакомство с Mexpanse3D: почему мы создали этот проект</h3>
-            <p>История создания платформы, наши цели и планы на будущее. Присоединяйтесь к сообществу! <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;">Читать далее →</a></p>
+            <div class="date" data-i18n="blog_date_4">📅 24 июня 2025</div>
+            <h3 data-i18n="blog_title_4">Знакомство с Mexpanse3D: почему мы создали этот проект</h3>
+            <p data-i18n="blog_desc_4">История создания платформы, наши цели и планы на будущее. Присоединяйтесь к сообществу! <a href="#" onclick="showToast('info', '📖 Читать полную статью...')" style="color:#0057ff;text-decoration:none;" data-i18n="blog_read_more">Читать далее →</a></p>
         </div>
         <div style="text-align:center;padding:20px 0;">
-            <button class="btn-primary" onclick="showToast('info', '📨 Подпишитесь на обновления!')" style="padding:12px 40px;font-size:16px;">
+            <button class="btn-primary" onclick="showToast('info', '📨 Подпишитесь на обновления!')" style="padding:12px 40px;font-size:16px;" data-i18n="blog_subscribe">
                 <i class="fas fa-bell"></i> Подписаться на новости
             </button>
         </div>
@@ -293,16 +302,17 @@
 </div>
 
 <footer class="container footer">
-    <div>© 2025 Mexpanse3D — бесплатные 3D-модели</div>
+    <div>© 2025 Mexpanse3D — <span data-i18n="footer_tagline">бесплатные 3D-модели</span></div>
     <div class="footer-links">
-        <a onclick="navigateTo('home')">Главная</a>
-        <a onclick="navigateTo('license')">Лицензия</a>
-        <a onclick="navigateTo('blog')">Блог</a>
-        <a onclick="showToast('info', 'ℹ️ О проекте Mexpanse3D')">О нас</a>
-        <a onclick="showToast('info', '❓ Часто задаваемые вопросы')">FAQ</a>
+        <a onclick="navigateTo('home')" data-i18n="nav_home">Главная</a>
+        <a onclick="navigateTo('license')" data-i18n="nav_license">Лицензия</a>
+        <a onclick="navigateTo('blog')" data-i18n="nav_blog">Блог</a>
+        <a onclick="showToast('info', 'ℹ️ О проекте Mexpanse3D')" data-i18n="footer_about">О нас</a>
+        <a onclick="showToast('info', '❓ Часто задаваемые вопросы')" data-i18n="footer_faq">FAQ</a>
         <a onclick="showToast('info', '🐙 GitHub репозиторий')"><i class="fab fa-github"></i> GitHub</a>
-        <a onclick="clearAllData()" style="color:#dc3545;"><i class="fas fa-database"></i> Сбросить данные</a>
-        <a onclick="forceReload()" style="color:#0057ff;"><i class="fas fa-sync"></i> Принудительно обновить</a>
+        <a onclick="clearAllData()" style="color:#dc3545;" data-i18n="footer_reset"><i class="fas fa-database"></i> Сбросить данные</a>
+        <a onclick="toggleDebug()" style="color:#0057ff;" data-i18n="footer_debug"><i class="fas fa-bug"></i> Debug</a>
+        <a onclick="forceReload()" style="color:#00a86b;"><i class="fas fa-sync"></i> Обновить</a>
     </div>
 </footer>
 
@@ -311,13 +321,13 @@
     <div class="modal-box">
         <div style="text-align:center;">
             <i class="fab fa-telegram-plane" style="font-size:52px;color:#0057ff;margin-bottom:12px;display:block;"></i>
-            <h2>🔥 Подпишись на Telegram</h2>
-            <p style="color:#5e5e5e;margin-bottom:20px;">Чтобы скачать модель, подпишитесь на наш канал. Это бесплатно и займёт 5 секунд!</p>
-            <a href="https://t.me/your_channel" target="_blank" class="btn-primary" style="display:inline-block;text-decoration:none;padding:12px 32px;font-size:16px;" id="tgSubscribeBtn">
+            <h2 data-i18n="subscribe_title">🔥 Подпишись на Telegram</h2>
+            <p style="color:#5e5e5e;margin-bottom:20px;" data-i18n="subscribe_desc">Чтобы скачать модель, подпишитесь на наш канал. Это бесплатно и займёт 5 секунд!</p>
+            <a href="https://t.me/your_channel" target="_blank" class="btn-primary" style="display:inline-block;text-decoration:none;padding:12px 32px;font-size:16px;" id="tgSubscribeBtn" data-i18n="subscribe_btn">
                 <i class="fab fa-telegram"></i> Подписаться
             </a>
             <br><br>
-            <button class="btn-cancel" id="modalCloseBtn">Закрыть</button>
+            <button class="btn-cancel" id="modalCloseBtn" data-i18n="btn_close">Закрыть</button>
         </div>
     </div>
 </div>
@@ -325,19 +335,19 @@
 <!-- MODAL: Admin (Add/Edit) -->
 <div class="modal-overlay" id="adminModal">
     <div class="modal-box">
-        <h2 id="adminModalTitle"><i class="fas fa-plus-circle"></i> Добавить модель</h2>
+        <h2 id="adminModalTitle"><i class="fas fa-plus-circle"></i> <span data-i18n="admin_add_title">Добавить модель</span></h2>
         <form id="adminForm">
             <input type="hidden" id="editId" value="">
             <div class="form-group">
-                <label>Название модели *</label>
-                <input type="text" id="modelName" placeholder="Например: Кибер-меч" required>
+                <label data-i18n="admin_model_name">Название модели *</label>
+                <input type="text" id="modelName" placeholder="Например: Кибер-меч" required data-i18n-placeholder="admin_model_name_ph">
             </div>
             <div class="form-group">
-                <label>Автор *</label>
-                <input type="text" id="modelAuthor" placeholder="Например: Alex3D" required>
+                <label data-i18n="admin_author">Автор *</label>
+                <input type="text" id="modelAuthor" placeholder="Например: Alex3D" required data-i18n-placeholder="admin_author_ph">
             </div>
             <div class="form-group">
-                <label>Формат</label>
+                <label data-i18n="admin_format">Формат</label>
                 <select id="modelFormat">
                     <option value="GLB">GLB</option>
                     <option value="OBJ">OBJ</option>
@@ -346,35 +356,35 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Категория</label>
+                <label data-i18n="admin_category">Категория</label>
                 <select id="modelCategory">
-                    <option value="tech">Техника</option>
-                    <option value="furniture">Мебель</option>
-                    <option value="character">Персонажи</option>
-                    <option value="nature">Природа</option>
-                    <option value="arch">Архитектура</option>
+                    <option value="tech" data-i18n="cat_tech">Техника</option>
+                    <option value="furniture" data-i18n="cat_furniture">Мебель</option>
+                    <option value="character" data-i18n="cat_character">Персонажи</option>
+                    <option value="nature" data-i18n="cat_nature">Природа</option>
+                    <option value="arch" data-i18n="cat_arch">Архитектура</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Иконка (Font Awesome)</label>
-                <input type="text" id="modelIcon" placeholder="fa-cube, fa-robot, fa-tree..." value="fa-cube">
+                <label data-i18n="admin_icon">Иконка (Font Awesome)</label>
+                <input type="text" id="modelIcon" placeholder="fa-cube, fa-robot, fa-tree..." value="fa-cube" data-i18n-placeholder="admin_icon_ph">
             </div>
             <div class="form-group">
-                <label>Загрузить 3D-модель (GLB/OBJ/FBX/STL)</label>
+                <label data-i18n="admin_file">Загрузить 3D-модель (GLB/OBJ/FBX/STL)</label>
                 <input type="file" id="modelFile" accept=".glb,.obj,.fbx,.stl">
-                <div class="file-info" id="fileInfo"><i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)</div>
+                <div class="file-info" id="fileInfo"><i class="fas fa-info-circle"></i> <span data-i18n="admin_file_info">Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)</span></div>
                 <div class="upload-progress" id="uploadProgress">
                     <div class="bar" id="uploadBar"></div>
                 </div>
             </div>
             <div class="form-group">
-                <label>Превью (изображение)</label>
+                <label data-i18n="admin_preview">Превью (изображение)</label>
                 <input type="file" id="modelPreview" accept="image/*">
-                <div class="file-info"><i class="fas fa-info-circle"></i> JPG, PNG, GIF (опционально)</div>
+                <div class="file-info"><i class="fas fa-info-circle"></i> <span data-i18n="admin_preview_info">JPG, PNG, GIF (опционально)</span></div>
             </div>
             <div class="modal-actions">
-                <button type="button" class="btn-cancel" onclick="closeAdminModal()">Отмена</button>
-                <button type="submit" class="btn-save" id="adminSubmitBtn">Сохранить</button>
+                <button type="button" class="btn-cancel" onclick="closeAdminModal()" data-i18n="btn_cancel">Отмена</button>
+                <button type="submit" class="btn-save" id="adminSubmitBtn" data-i18n="btn_save">Сохранить</button>
             </div>
         </form>
     </div>
@@ -383,18 +393,18 @@
 <!-- MODAL: Preview 3D -->
 <div class="modal-overlay" id="previewModal">
     <div class="modal-box" style="max-width:640px;">
-        <h2><i class="fas fa-cube"></i> 3D Предпросмотр</h2>
+        <h2><i class="fas fa-cube"></i> <span data-i18n="preview_title">3D Предпросмотр</span></h2>
         <div class="preview-container" id="previewContainer">
             <i class="fas fa-cube" style="font-size:64px;color:#ccc;"></i>
         </div>
         <div class="preview-info">
             <h3 id="previewTitle">Название модели</h3>
-            <p id="previewAuthor">Автор: неизвестен</p>
+            <p id="previewAuthor"><span data-i18n="preview_author">Автор:</span> неизвестен</p>
             <p id="previewFileInfo" style="font-size:13px;color:#888;"></p>
         </div>
         <div class="modal-actions">
-            <button class="btn-cancel" onclick="closePreviewModal()">Закрыть</button>
-            <button class="btn-save" onclick="downloadCurrentPreview()"><i class="fas fa-download"></i> Скачать</button>
+            <button class="btn-cancel" onclick="closePreviewModal()" data-i18n="btn_close">Закрыть</button>
+            <button class="btn-save" onclick="downloadCurrentPreview()"><i class="fas fa-download"></i> <span data-i18n="btn_download">Скачать</span></button>
         </div>
     </div>
 </div>
@@ -402,6 +412,275 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
+    // ============================================================
+    //  TRANSLATIONS - ПОЛНАЯ ПОДДЕРЖКА РУССКОГО И АНГЛИЙСКОГО
+    // ============================================================
+    const translations = {
+        ru: {
+            badge_free: '100% Free',
+            nav_home: 'Главная',
+            nav_popular: 'Популярное',
+            nav_license: 'Лицензия',
+            nav_blog: 'Блог',
+            btn_admin: 'Admin',
+            btn_upload: 'Загрузить',
+            hero_title: 'Бесплатные 3D-модели',
+            hero_desc: 'Высококачественные .glb, .obj, .fbx от сообщества. Свободно для коммерции.',
+            search_placeholder: 'Поиск модели...',
+            search_btn: 'Найти',
+            categories_label: 'Категории:',
+            cat_all: 'Все',
+            cat_tech: 'Техника',
+            cat_furniture: 'Мебель',
+            cat_character: 'Персонажи',
+            cat_nature: 'Природа',
+            cat_arch: 'Архитектура',
+            popular_title: '⭐ Популярные модели',
+            popular_desc: 'Самые скачиваемые и просматриваемые 3D-модели сообщества Mexpanse3D.',
+            license_title: '📄 Лицензия',
+            license_intro: 'Все модели на Mexpanse3D распространяются по лицензии Creative Commons Zero (CC0).',
+            license_allowed_title: 'Что разрешено',
+            license_allowed_1: '✅ Скачивание и использование в личных и коммерческих проектах',
+            license_allowed_2: '✅ Модификация и адаптация моделей под свои нужды',
+            license_allowed_3: '✅ Публикация работ с использованием моделей (с указанием авторства или без)',
+            license_allowed_4: '✅ Продажа продуктов, в которых используются эти модели',
+            license_forbidden_title: 'Что запрещено',
+            license_forbidden_1: '❌ Перепродажа моделей в неизменном виде как самостоятельного продукта',
+            license_forbidden_2: '❌ Выдача моделей за свои собственные (плагиат)',
+            license_forbidden_3: '❌ Использование в запрещённых или незаконных целях',
+            license_thanks_title: 'Благодарность',
+            license_thanks_desc: 'Хотя это и не обязательно, мы будем рады, если вы укажете авторство и поставите ссылку на Mexpanse3D в своих проектах. Это помогает сообществу расти! 🙌',
+            license_formats_title: 'Форматы файлов',
+            license_formats_desc: 'Мы поддерживаем следующие форматы 3D-моделей:',
+            format_glb: '— универсальный формат для веба и игр',
+            format_obj: '— классический формат для 3D-редакторов',
+            format_fbx: '— формат для анимации и игровых движков',
+            format_stl: '— формат для 3D-печати',
+            license_contacts_title: 'Контакты',
+            license_contacts_desc: 'По вопросам лицензирования и сотрудничества пишите нам:',
+            blog_title: '📝 Блог о 3D',
+            blog_desc: 'Новости, туториалы и обзоры из мира 3D-моделирования.',
+            blog_date_1: '📅 15 июля 2025',
+            blog_title_1: 'Как выбрать формат 3D-модели для своего проекта',
+            blog_desc_1: 'Разбираемся в особенностях форматов GLB, OBJ, FBX и STL. Узнайте, какой формат подходит для игр, 3D-печати и веб-приложений. ',
+            blog_date_2: '📅 8 июля 2025',
+            blog_title_2: 'Топ-5 инструментов для создания 3D-моделей',
+            blog_desc_2: 'Обзор лучших бесплатных и платных программ для 3D-моделирования: от Blender до ZBrush. Советы для новичков и профессионалов. ',
+            blog_date_3: '📅 1 июля 2025',
+            blog_title_3: 'Как оптимизировать 3D-модели для игр',
+            blog_desc_3: 'Практические советы по снижению полигонов, оптимизации текстур и подготовке моделей для Unity и Unreal Engine. ',
+            blog_date_4: '📅 24 июня 2025',
+            blog_title_4: 'Знакомство с Mexpanse3D: почему мы создали этот проект',
+            blog_desc_4: 'История создания платформы, наши цели и планы на будущее. Присоединяйтесь к сообществу! ',
+            blog_read_more: 'Читать далее →',
+            blog_subscribe: 'Подписаться на новости',
+            footer_tagline: 'бесплатные 3D-модели',
+            footer_about: 'О нас',
+            footer_faq: 'FAQ',
+            footer_reset: 'Сбросить данные',
+            footer_debug: 'Debug',
+            subscribe_title: '🔥 Подпишись на Telegram',
+            subscribe_desc: 'Чтобы скачать модель, подпишитесь на наш канал. Это бесплатно и займёт 5 секунд!',
+            subscribe_btn: 'Подписаться',
+            btn_close: 'Закрыть',
+            btn_cancel: 'Отмена',
+            btn_save: 'Сохранить',
+            btn_download: 'Скачать',
+            admin_add_title: 'Добавить модель',
+            admin_edit_title: 'Редактировать модель',
+            admin_model_name: 'Название модели *',
+            admin_model_name_ph: 'Например: Кибер-меч',
+            admin_author: 'Автор *',
+            admin_author_ph: 'Например: Alex3D',
+            admin_format: 'Формат',
+            admin_category: 'Категория',
+            admin_icon: 'Иконка (Font Awesome)',
+            admin_icon_ph: 'fa-cube, fa-robot, fa-tree...',
+            admin_file: 'Загрузить 3D-модель (GLB/OBJ/FBX/STL)',
+            admin_file_info: 'Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)',
+            admin_preview: 'Превью (изображение)',
+            admin_preview_info: 'JPG, PNG, GIF (опционально)',
+            preview_title: '3D Предпросмотр',
+            preview_author: 'Автор:',
+            preview_file: 'Файл:',
+            no_models: 'Ничего не найдено',
+            no_models_desc: 'Попробуйте изменить запрос',
+            no_popular: 'Нет популярных моделей',
+            popular_badge: 'Популярно',
+            admin_mode_on: '🔓 Добро пожаловать в админ-панель!',
+            admin_mode_off: '👋 Режим администратора выключен',
+            admin_error: '⚠️ Войдите в режим администратора!',
+            admin_password_error: '❌ Неверный пароль!',
+            model_added: '✅ Модель добавлена!',
+            model_updated: '✅ Модель обновлена!',
+            model_deleted: '🗑️ Модель удалена!',
+            model_delete_confirm: 'Удалить эту модель?',
+            fields_required: '⚠️ Заполните все обязательные поля!',
+            file_too_large: '❌ Файл слишком большой! Максимум 50MB',
+            file_invalid: '❌ Неподдерживаемый формат! Используйте GLB, OBJ, FBX или STL',
+            subscribe_success: '✅ Спасибо! Теперь вы можете скачивать любые модели.',
+            download_started: '⬇️ Скачивание "{title}" начато!',
+            file_uploaded: 'Файл загружен',
+            read_full: '📖 Читать полную статью...',
+            data_reset: '🗑️ Все данные сброшены!'
+        },
+        en: {
+            badge_free: '100% Free',
+            nav_home: 'Home',
+            nav_popular: 'Popular',
+            nav_license: 'License',
+            nav_blog: 'Blog',
+            btn_admin: 'Admin',
+            btn_upload: 'Upload',
+            hero_title: 'Free 3D Models',
+            hero_desc: 'High-quality .glb, .obj, .fbx from the community. Free for commercial use.',
+            search_placeholder: 'Search models...',
+            search_btn: 'Search',
+            categories_label: 'Categories:',
+            cat_all: 'All',
+            cat_tech: 'Tech',
+            cat_furniture: 'Furniture',
+            cat_character: 'Characters',
+            cat_nature: 'Nature',
+            cat_arch: 'Architecture',
+            popular_title: '⭐ Popular Models',
+            popular_desc: 'Most downloaded and viewed 3D models from Mexpanse3D community.',
+            license_title: '📄 License',
+            license_intro: 'All models on Mexpanse3D are distributed under the <strong>Creative Commons Zero (CC0)</strong> license.',
+            license_allowed_title: 'What is allowed',
+            license_allowed_1: '✅ Download and use in personal and commercial projects',
+            license_allowed_2: '✅ Modify and adapt models to your needs',
+            license_allowed_3: '✅ Publish works using models (with or without attribution)',
+            license_allowed_4: '✅ Sell products that use these models',
+            license_forbidden_title: 'What is forbidden',
+            license_forbidden_1: '❌ Reselling models unchanged as a standalone product',
+            license_forbidden_2: '❌ Claiming models as your own (plagiarism)',
+            license_forbidden_3: '❌ Using models for illegal purposes',
+            license_thanks_title: 'Gratitude',
+            license_thanks_desc: 'Although not required, we would appreciate it if you give credit and link to Mexpanse3D in your projects. It helps the community grow! 🙌',
+            license_formats_title: 'File Formats',
+            license_formats_desc: 'We support the following 3D model formats:',
+            format_glb: '— universal format for web and games',
+            format_obj: '— classic format for 3D editors',
+            format_fbx: '— format for animation and game engines',
+            format_stl: '— format for 3D printing',
+            license_contacts_title: 'Contacts',
+            license_contacts_desc: 'For licensing and collaboration inquiries, contact us at:',
+            blog_title: '📝 3D Blog',
+            blog_desc: 'News, tutorials and reviews from the world of 3D modeling.',
+            blog_date_1: '📅 July 15, 2025',
+            blog_title_1: 'How to choose a 3D model format for your project',
+            blog_desc_1: 'Understanding the features of GLB, OBJ, FBX and STL formats. Learn which format is best for games, 3D printing and web applications. ',
+            blog_date_2: '📅 July 8, 2025',
+            blog_title_2: 'Top 5 tools for creating 3D models',
+            blog_desc_2: 'Review of the best free and paid programs for 3D modeling: from Blender to ZBrush. Tips for beginners and professionals. ',
+            blog_date_3: '📅 July 1, 2025',
+            blog_title_3: 'How to optimize 3D models for games',
+            blog_desc_3: 'Practical tips for reducing polygons, optimizing textures and preparing models for Unity and Unreal Engine. ',
+            blog_date_4: '📅 June 24, 2025',
+            blog_title_4: 'Introduction to Mexpanse3D: why we created this project',
+            blog_desc_4: 'The story behind the platform, our goals and plans for the future. Join the community! ',
+            blog_read_more: 'Read more →',
+            blog_subscribe: 'Subscribe to updates',
+            footer_tagline: 'free 3D models',
+            footer_about: 'About',
+            footer_faq: 'FAQ',
+            footer_reset: 'Reset data',
+            footer_debug: 'Debug',
+            subscribe_title: '🔥 Subscribe to Telegram',
+            subscribe_desc: 'To download models, subscribe to our channel. It\'s free and takes 5 seconds!',
+            subscribe_btn: 'Subscribe',
+            btn_close: 'Close',
+            btn_cancel: 'Cancel',
+            btn_save: 'Save',
+            btn_download: 'Download',
+            admin_add_title: 'Add Model',
+            admin_edit_title: 'Edit Model',
+            admin_model_name: 'Model Name *',
+            admin_model_name_ph: 'e.g.: Cyber Sword',
+            admin_author: 'Author *',
+            admin_author_ph: 'e.g.: Alex3D',
+            admin_format: 'Format',
+            admin_category: 'Category',
+            admin_icon: 'Icon (Font Awesome)',
+            admin_icon_ph: 'fa-cube, fa-robot, fa-tree...',
+            admin_file: 'Upload 3D Model (GLB/OBJ/FBX/STL)',
+            admin_file_info: 'Supported: GLB, OBJ, FBX, STL (max. 50MB)',
+            admin_preview: 'Preview (image)',
+            admin_preview_info: 'JPG, PNG, GIF (optional)',
+            preview_title: '3D Preview',
+            preview_author: 'Author:',
+            preview_file: 'File:',
+            no_models: 'Nothing found',
+            no_models_desc: 'Try changing your search query',
+            no_popular: 'No popular models',
+            popular_badge: 'Popular',
+            admin_mode_on: '🔓 Welcome to admin panel!',
+            admin_mode_off: '👋 Admin mode disabled',
+            admin_error: '⚠️ Please enter admin mode!',
+            admin_password_error: '❌ Wrong password!',
+            model_added: '✅ Model added!',
+            model_updated: '✅ Model updated!',
+            model_deleted: '🗑️ Model deleted!',
+            model_delete_confirm: 'Delete this model?',
+            fields_required: '⚠️ Please fill in all required fields!',
+            file_too_large: '❌ File is too large! Maximum 50MB',
+            file_invalid: '❌ Unsupported format! Use GLB, OBJ, FBX or STL',
+            subscribe_success: '✅ Thank you! Now you can download any models.',
+            download_started: '⬇️ Downloading "{title}" started!',
+            file_uploaded: 'File uploaded',
+            read_full: '📖 Read full article...',
+            data_reset: '🗑️ All data has been reset!'
+        }
+    };
+
+    let currentLang = 'ru';
+
+    function applyTranslations(lang) {
+        const t = translations[lang];
+        if (!t) return;
+        
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                if (el.tagName === 'INPUT' && el.type === 'text') {
+                    el.placeholder = t[key];
+                } else {
+                    el.innerHTML = t[key];
+                }
+            }
+        });
+
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (t[key]) {
+                el.placeholder = t[key];
+            }
+        });
+
+        const editId = document.getElementById('editId').value;
+        if (editId) {
+            document.getElementById('adminModalTitle').innerHTML = `<i class="fas fa-pen"></i> ${t.admin_edit_title || 'Edit Model'}`;
+        } else {
+            document.getElementById('adminModalTitle').innerHTML = `<i class="fas fa-plus-circle"></i> ${t.admin_add_title || 'Add Model'}`;
+        }
+
+        document.getElementById('adminSubmitBtn').textContent = t.btn_save || 'Save';
+
+        document.querySelectorAll('.filter-chip[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                el.textContent = t[key];
+            }
+        });
+
+        const footerYear = document.querySelector('.footer div:first-child');
+        if (footerYear) {
+            const year = new Date().getFullYear();
+            footerYear.innerHTML = `© ${year} Mexpanse3D — ${t.footer_tagline || 'free 3D models'}`;
+        }
+    }
+
     // ============================================================
     //  TOAST NOTIFICATIONS
     // ============================================================
@@ -438,6 +717,47 @@
             renderPopularModels();
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateDebug();
+    }
+
+    // ============================================================
+    //  DEBUG PANEL
+    // ============================================================
+    let debugVisible = false;
+
+    function toggleDebug() {
+        debugVisible = !debugVisible;
+        const panel = document.getElementById('debugPanel');
+        if (debugVisible) {
+            panel.classList.add('active');
+        } else {
+            panel.classList.remove('active');
+        }
+        updateDebug();
+    }
+
+    function updateDebug() {
+        if (!debugVisible) return;
+        const storageData = localStorage.getItem('mexpanse_models');
+        let storageCount = 0;
+        if (storageData) {
+            try {
+                const parsed = JSON.parse(storageData);
+                if (Array.isArray(parsed)) storageCount = parsed.length;
+            } catch(e) {}
+        }
+        document.getElementById('debugMemoryCount').textContent = modelsData.length;
+        document.getElementById('debugStorageCount').textContent = storageCount;
+        document.getElementById('debugAdminMode').textContent = isAdminMode ? '✅ Включен' : '❌ Выключен';
+        
+        const status = document.getElementById('debugStatus');
+        if (storageCount === modelsData.length) {
+            status.textContent = '✅ Синхронизировано';
+            status.style.color = '#00a86b';
+        } else {
+            status.textContent = '⚠️ НЕ СИНХРОНИЗИРОВАНО!';
+            status.style.color = '#dc3545';
+        }
     }
 
     // ============================================================
@@ -451,7 +771,7 @@
             grid.innerHTML = `
                 <div style="grid-column:1/-1; text-align:center; padding:60px 0; color:#888;">
                     <i class="fas fa-box-open" style="font-size:40px; display:block; margin-bottom:16px;"></i>
-                    <strong>Нет популярных моделей</strong>
+                    <strong>${translations[currentLang].no_popular || 'No popular models'}</strong>
                 </div>
             `;
             return;
@@ -464,7 +784,7 @@
                     <span class="badge-3d"><i class="fas fa-cube"></i> 3D</span>
                     ${model.fileSize ? `<span class="badge-size">${formatFileSize(model.fileSize)}</span>` : ''}
                     <span style="position:absolute;bottom:12px;right:12px;background:rgba(255,107,53,0.9);color:white;padding:2px 12px;border-radius:20px;font-size:12px;font-weight:600;">
-                        <i class="fas fa-fire"></i> Популярно
+                        <i class="fas fa-fire"></i> ${translations[currentLang].popular_badge || 'Popular'}
                     </span>
                 </div>
                 <div class="card-body">
@@ -475,16 +795,17 @@
                     <div class="card-author"><i class="far fa-user-circle"></i> ${model.author}</div>
                     <div class="card-footer">
                         <button class="btn-preview" onclick="openPreview(${model.id})">
-                            <i class="fas fa-eye"></i> Предпросмотр
+                            <i class="fas fa-eye"></i> ${translations[currentLang].btn_download === 'Скачать' ? 'Предпросмотр' : 'Preview'}
                         </button>
                         <button class="btn-download ${subscribed ? '' : 'locked'}" onclick="downloadModel(${model.id})">
                             ${subscribed ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-lock"></i>'}
-                            ${subscribed ? 'Скачать' : '🔒 Подпишись'}
+                            ${subscribed ? (translations[currentLang].btn_download || 'Download') : '🔒 ' + (translations[currentLang].btn_download === 'Скачать' ? 'Подпишись' : 'Subscribe')}
                         </button>
                     </div>
                 </div>
             </div>
         `).join('');
+        updateDebug();
     }
 
     // ============================================================
@@ -504,7 +825,6 @@
         ];
     }
 
-    // ГЛАВНАЯ ФУНКЦИЯ ЗАГРУЗКИ - ВСЕГДА БЕРЁТ ДАННЫЕ ИЗ localStorage
     function loadModels() {
         const stored = localStorage.getItem('mexpanse_models');
         if (stored) {
@@ -518,20 +838,17 @@
                 console.warn('⚠️ Ошибка парсинга localStorage:', e);
             }
         }
-        // Если данных нет - создаём дефолтные
         const defaults = getDefaultModels();
         localStorage.setItem('mexpanse_models', JSON.stringify(defaults));
         console.log('✅ Созданы дефолтные модели');
         return defaults;
     }
 
-    // ФУНКЦИЯ СОХРАНЕНИЯ - ПРОВЕРЯЕТ, ЧТО ДАННЫЕ ДЕЙСТВИТЕЛЬНО СОХРАНИЛИСЬ
     function saveModels(models) {
         try {
             const jsonData = JSON.stringify(models);
             localStorage.setItem('mexpanse_models', jsonData);
             
-            // ПРОВЕРКА: читаем обратно и сравниваем
             const saved = localStorage.getItem('mexpanse_models');
             if (saved === jsonData) {
                 console.log('💾 Модели УСПЕШНО сохранены в localStorage:', models.length);
@@ -543,9 +860,9 @@
             console.error('❌ Ошибка сохранения в localStorage:', e);
             showToast('error', '❌ Ошибка сохранения данных!');
         }
+        updateDebug();
     }
 
-    // ИНИЦИАЛИЗАЦИЯ - загружаем данные
     let modelsData = loadModels();
     let nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
 
@@ -585,8 +902,8 @@
             grid.innerHTML = `
                 <div style="grid-column:1/-1; text-align:center; padding:60px 0; color:#888;">
                     <i class="fas fa-box-open" style="font-size:40px; display:block; margin-bottom:16px;"></i>
-                    <strong>Ничего не найдено</strong><br>
-                    <span style="font-size:15px;">Попробуйте изменить запрос</span>
+                    <strong>${translations[currentLang].no_models || 'Nothing found'}</strong><br>
+                    <span style="font-size:15px;">${translations[currentLang].no_models_desc || 'Try changing your search query'}</span>
                 </div>
             `;
             return;
@@ -601,8 +918,8 @@
                     ${model.format ? `<span class="badge-file">${model.format}</span>` : ''}
                     ${isAdminMode ? `
                         <div class="card-admin-actions">
-                            <button class="btn-edit" onclick="openEditModal(${model.id})" title="Редактировать"><i class="fas fa-pen"></i></button>
-                            <button class="btn-delete" onclick="deleteModel(${model.id})" title="Удалить"><i class="fas fa-trash"></i></button>
+                            <button class="btn-edit" onclick="openEditModal(${model.id})" title="${translations[currentLang].btn_edit || 'Edit'}"><i class="fas fa-pen"></i></button>
+                            <button class="btn-delete" onclick="deleteModel(${model.id})" title="${translations[currentLang].btn_delete || 'Delete'}"><i class="fas fa-trash"></i></button>
                         </div>
                     ` : ''}
                 </div>
@@ -614,16 +931,17 @@
                     <div class="card-author"><i class="far fa-user-circle"></i> ${model.author}</div>
                     <div class="card-footer">
                         <button class="btn-preview" onclick="openPreview(${model.id})">
-                            <i class="fas fa-eye"></i> Предпросмотр
+                            <i class="fas fa-eye"></i> ${translations[currentLang].btn_download === 'Скачать' ? 'Предпросмотр' : 'Preview'}
                         </button>
                         <button class="btn-download ${subscribed ? '' : 'locked'}" onclick="downloadModel(${model.id})">
                             ${subscribed ? '<i class="fas fa-arrow-down"></i>' : '<i class="fas fa-lock"></i>'}
-                            ${subscribed ? 'Скачать' : '🔒 Подпишись'}
+                            ${subscribed ? (translations[currentLang].btn_download || 'Download') : '🔒 ' + (translations[currentLang].btn_download === 'Скачать' ? 'Подпишись' : 'Subscribe')}
                         </button>
                     </div>
                 </div>
             </div>
         `).join('');
+        updateDebug();
     }
 
     // ============================================================
@@ -656,34 +974,36 @@
         if (isAdminMode) {
             isAdminMode = false;
             document.getElementById('adminBadge').classList.remove('active');
-            this.innerHTML = '<i class="fas fa-shield-alt"></i> Admin';
+            this.innerHTML = `<i class="fas fa-shield-alt"></i> ${translations[currentLang].btn_admin || 'Admin'}`;
             renderModels(currentCategory, document.getElementById('searchInput').value);
-            showToast('info', '👋 Режим администратора выключен');
+            showToast('info', translations[currentLang].admin_mode_off || '👋 Admin mode disabled');
+            updateDebug();
             return;
         }
 
-        const password = prompt('Введите пароль администратора:');
+        const password = prompt('Enter admin password:');
         if (password === ADMIN_PASSWORD) {
             isAdminMode = true;
             document.getElementById('adminBadge').classList.add('active');
             this.innerHTML = '<i class="fas fa-times"></i> Exit Admin';
             renderModels(currentCategory, document.getElementById('searchInput').value);
-            showToast('success', '🔓 Добро пожаловать в админ-панель!');
+            showToast('success', translations[currentLang].admin_mode_on || '🔓 Welcome to admin panel!');
+            updateDebug();
         } else if (password !== null) {
-            showToast('error', '❌ Неверный пароль!');
+            showToast('error', translations[currentLang].admin_password_error || '❌ Wrong password!');
         }
     });
 
     // ============================================================
-    //  CRUD: ADD / EDIT / DELETE (ФИНАЛЬНАЯ ИСПРАВЛЕННАЯ ВЕРСИЯ)
+    //  CRUD: ADD / EDIT / DELETE
     // ============================================================
     function openAddModal() {
         if (!isAdminMode) {
-            showToast('error', '⚠️ Войдите в режим администратора!');
+            showToast('error', translations[currentLang].admin_error || '⚠️ Please enter admin mode!');
             return;
         }
         document.getElementById('editId').value = '';
-        document.getElementById('adminModalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Добавить модель';
+        document.getElementById('adminModalTitle').innerHTML = `<i class="fas fa-plus-circle"></i> ${translations[currentLang].admin_add_title || 'Add Model'}`;
         document.getElementById('modelName').value = '';
         document.getElementById('modelAuthor').value = '';
         document.getElementById('modelFormat').value = 'GLB';
@@ -691,10 +1011,10 @@
         document.getElementById('modelIcon').value = 'fa-cube';
         document.getElementById('modelFile').value = '';
         document.getElementById('modelPreview').value = '';
-        document.getElementById('fileInfo').innerHTML = '<i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)';
+        document.getElementById('fileInfo').innerHTML = `<i class="fas fa-info-circle"></i> ${translations[currentLang].admin_file_info || 'Supported: GLB, OBJ, FBX, STL (max. 50MB)'}`;
         document.getElementById('uploadProgress').classList.remove('active');
         document.getElementById('uploadBar').style.width = '0%';
-        document.getElementById('adminSubmitBtn').textContent = 'Сохранить';
+        document.getElementById('adminSubmitBtn').textContent = translations[currentLang].btn_save || 'Save';
         document.getElementById('adminSubmitBtn').disabled = false;
         document.getElementById('adminModal').classList.add('active');
     }
@@ -705,7 +1025,7 @@
         if (!model) return;
 
         document.getElementById('editId').value = id;
-        document.getElementById('adminModalTitle').innerHTML = '<i class="fas fa-pen"></i> Редактировать модель';
+        document.getElementById('adminModalTitle').innerHTML = `<i class="fas fa-pen"></i> ${translations[currentLang].admin_edit_title || 'Edit Model'}`;
         document.getElementById('modelName').value = model.title;
         document.getElementById('modelAuthor').value = model.author;
         document.getElementById('modelFormat').value = model.format;
@@ -714,11 +1034,11 @@
         document.getElementById('modelFile').value = '';
         document.getElementById('modelPreview').value = '';
         document.getElementById('fileInfo').innerHTML = model.fileData ? 
-            `<i class="fas fa-check-circle" style="color:#00a86b;"></i> Файл загружен (${formatFileSize(model.fileSize)})` :
-            '<i class="fas fa-info-circle"></i> Поддерживаются: GLB, OBJ, FBX, STL (макс. 50MB)';
+            `<i class="fas fa-check-circle" style="color:#00a86b;"></i> ${translations[currentLang].file_uploaded || 'File uploaded'} (${formatFileSize(model.fileSize)})` :
+            `<i class="fas fa-info-circle"></i> ${translations[currentLang].admin_file_info || 'Supported: GLB, OBJ, FBX, STL (max. 50MB)'}`;
         document.getElementById('uploadProgress').classList.remove('active');
         document.getElementById('uploadBar').style.width = '0%';
-        document.getElementById('adminSubmitBtn').textContent = 'Сохранить';
+        document.getElementById('adminSubmitBtn').textContent = translations[currentLang].btn_save || 'Save';
         document.getElementById('adminSubmitBtn').disabled = false;
         document.getElementById('adminModal').classList.add('active');
     }
@@ -733,14 +1053,14 @@
         const file = this.files[0];
         if (file) {
             if (file.size > MAX_FILE_SIZE) {
-                showToast('error', '❌ Файл слишком большой! Максимум 50MB');
+                showToast('error', translations[currentLang].file_too_large || '❌ File is too large! Maximum 50MB');
                 this.value = '';
                 return;
             }
             const ext = file.name.split('.').pop().toLowerCase();
             const validExts = ['glb', 'obj', 'fbx', 'stl'];
             if (!validExts.includes(ext)) {
-                showToast('error', '❌ Неподдерживаемый формат! Используйте GLB, OBJ, FBX или STL');
+                showToast('error', translations[currentLang].file_invalid || '❌ Unsupported format! Use GLB, OBJ, FBX or STL');
                 this.value = '';
                 return;
             }
@@ -760,13 +1080,13 @@
         const previewInput = document.getElementById('modelPreview');
 
         if (!name || !author) {
-            showToast('error', '⚠️ Заполните все обязательные поля!');
+            showToast('error', translations[currentLang].fields_required || '⚠️ Please fill in all required fields!');
             return;
         }
 
         const submitBtn = document.getElementById('adminSubmitBtn');
         submitBtn.disabled = true;
-        submitBtn.textContent = '⏳ Загрузка...';
+        submitBtn.textContent = '⏳ Uploading...';
 
         let fileData = null;
         let fileSize = null;
@@ -815,11 +1135,11 @@
                         ...(fileData !== null ? { fileData, fileSize } : {}),
                         ...(previewData !== null ? { previewData } : {})
                     };
-                    showToast('success', '✅ Модель обновлена!');
+                    showToast('success', translations[currentLang].model_updated || '✅ Model updated!');
                 } else {
-                    showToast('error', '❌ Модель не найдена!');
+                    showToast('error', '❌ Model not found!');
                     submitBtn.disabled = false;
-                    submitBtn.textContent = 'Сохранить';
+                    submitBtn.textContent = translations[currentLang].btn_save || 'Save';
                     return;
                 }
             } else {
@@ -835,21 +1155,21 @@
                     previewData: previewData || null
                 };
                 modelsData.push(newModel);
-                showToast('success', '✅ Модель добавлена!');
+                showToast('success', translations[currentLang].model_added || '✅ Model added!');
             }
 
-            // СОХРАНЯЕМ ДАННЫЕ
             saveModels(modelsData);
             closeAdminModal();
             renderModels(currentCategory, document.getElementById('searchInput').value);
             renderPopularModels();
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Сохранить';
+            submitBtn.textContent = translations[currentLang].btn_save || 'Save';
+            updateDebug();
         }).catch(error => {
-            console.error('❌ Ошибка:', error);
-            showToast('error', '❌ Ошибка при загрузке файла!');
+            console.error('❌ Error:', error);
+            showToast('error', '❌ Error uploading file!');
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Сохранить';
+            submitBtn.textContent = translations[currentLang].btn_save || 'Save';
         });
     });
 
@@ -858,71 +1178,58 @@
     // ============================================================
     function deleteModel(id) {
         if (!isAdminMode) {
-            showToast('error', '⚠️ Войдите в режим администратора!');
+            showToast('error', translations[currentLang].admin_error || '⚠️ Please enter admin mode!');
             return;
         }
         
-        if (!confirm('Удалить эту модель?')) {
+        if (!confirm(translations[currentLang].model_delete_confirm || 'Delete this model?')) {
             return;
         }
 
         console.log('🗑️ Удаление модели ID:', id);
-        console.log('📦 Моделей до удаления:', modelsData.length);
+        console.log('📦 Моделей ДО удаления:', modelsData.length);
 
-        // Удаляем модель
+        // Удаляем модель из массива
         modelsData = modelsData.filter(m => m.id !== id);
         
-        console.log('📦 Моделей после удаления:', modelsData.length);
+        console.log('📦 Моделей ПОСЛЕ удаления:', modelsData.length);
 
-        // НЕМЕДЛЕННО СОХРАНЯЕМ
+        // СОХРАНЯЕМ В localStorage
         saveModels(modelsData);
         
         // Обновляем nextId
         nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
         
-        // ПРОВЕРКА: читаем из localStorage и сверяем
-        const stored = localStorage.getItem('mexpanse_models');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                console.log('💾 В localStorage после сохранения:', parsed.length);
-                if (parsed.length !== modelsData.length) {
-                    console.error('❌ КРИТИЧЕСКАЯ ОШИБКА: данные в памяти и localStorage не совпадают!');
-                    showToast('error', '❌ Ошибка синхронизации данных!');
-                    // Восстанавливаем из localStorage
-                    modelsData = parsed;
-                }
-            } catch(e) {}
-        }
-        
         // Перерисовываем
         renderModels(currentCategory, document.getElementById('searchInput').value);
         renderPopularModels();
         
-        showToast('success', `🗑️ Модель удалена! Осталось: ${modelsData.length}`);
+        showToast('success', `${translations[currentLang].model_deleted || '🗑️ Model deleted!'} Осталось: ${modelsData.length}`);
+        console.log('✅ Удаление завершено. Осталось:', modelsData.length);
+        updateDebug();
     }
 
     // ============================================================
     //  СБРОС ДАННЫХ
     // ============================================================
     function clearAllData() {
-        if (confirm('⚠️ Удалить все данные и сбросить кэш? Это действие нельзя отменить!')) {
+        if (confirm('⚠️ ' + (translations[currentLang].model_delete_confirm || 'Delete all data? This cannot be undone!'))) {
             localStorage.removeItem('mexpanse_models');
             modelsData = getDefaultModels();
             saveModels(modelsData);
             nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
             renderModels(currentCategory, '');
             renderPopularModels();
-            showToast('success', '🗑️ Все данные сброшены!');
-            console.log('🗑️ Данные сброшены');
+            showToast('success', translations[currentLang].data_reset || '🗑️ All data has been reset!');
+            console.log('🗑️ Data reset');
+            updateDebug();
         }
     }
 
     // ============================================================
-    //  ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ
+    //  ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ ИЗ localStorage
     // ============================================================
     function forceReload() {
-        // Перезагружаем данные из localStorage
         const stored = localStorage.getItem('mexpanse_models');
         if (stored) {
             try {
@@ -934,9 +1241,12 @@
                     renderPopularModels();
                     showToast('success', '🔄 Данные обновлены из localStorage!');
                     console.log('🔄 Принудительное обновление из localStorage');
+                    updateDebug();
                     return;
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error('❌ Ошибка при обновлении:', e);
+            }
         }
         showToast('error', '❌ Не удалось обновить данные!');
     }
@@ -950,10 +1260,10 @@
 
         currentPreviewModel = model;
         document.getElementById('previewTitle').textContent = model.title;
-        document.getElementById('previewAuthor').textContent = 'Автор: ' + model.author;
+        document.getElementById('previewAuthor').innerHTML = `${translations[currentLang].preview_author || 'Author:'} ${model.author}`;
         document.getElementById('previewFileInfo').textContent = model.fileData ? 
-            `Файл: ${model.format} (${formatFileSize(model.fileSize)})` :
-            'Файл не загружен (демо-версия)';
+            `${translations[currentLang].preview_file || 'File:'} ${model.format} (${formatFileSize(model.fileSize)})` :
+            'File not uploaded (demo version)';
 
         const container = document.getElementById('previewContainer');
         container.innerHTML = '';
@@ -1109,12 +1419,13 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                showToast('success', `⬇️ Скачивание "${model.title}" начато!`);
+                const msg = translations[currentLang].download_started || '⬇️ Downloading "{title}" started!';
+                showToast('success', msg.replace('{title}', model.title));
                 return;
             } catch(e) {}
         }
 
-        const content = `// ${model.title}.${model.format}\n// Автор: ${model.author}\n// Категория: ${model.category}\n// Сгенерировано Mexpanse3D\n\n// Это пример 3D-модели в формате ${model.format}`;
+        const content = `// ${model.title}.${model.format}\n// Author: ${model.author}\n// Category: ${model.category}\n// Generated by Mexpanse3D\n\n// This is a sample 3D model in ${model.format} format`;
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1124,7 +1435,8 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showToast('success', `⬇️ Скачивание "${model.title}" начато!`);
+        const msg = translations[currentLang].download_started || '⬇️ Downloading "{title}" started!';
+        showToast('success', msg.replace('{title}', model.title));
     }
 
     document.getElementById('modalCloseBtn').addEventListener('click', () => {
@@ -1141,7 +1453,7 @@
             document.getElementById('subscribeModal').classList.remove('active');
             renderModels(currentCategory, document.getElementById('searchInput').value);
             renderPopularModels();
-            showToast('success', '✅ Спасибо! Теперь вы можете скачивать любые модели.');
+            showToast('success', translations[currentLang].subscribe_success || '✅ Thank you! Now you can download any models.');
         }, 500);
         window.open('https://t.me/Mexpanse3D', '_blank');
     });
@@ -1150,9 +1462,15 @@
     //  LANGUAGE TOGGLE
     // ============================================================
     document.getElementById('langToggle').addEventListener('click', function() {
-        const isRu = this.textContent === 'EN / RU';
-        this.textContent = isRu ? 'RU / EN' : 'EN / RU';
-        showToast('info', isRu ? '🇬🇧 English' : '🇷🇺 Русский');
+        currentLang = currentLang === 'ru' ? 'en' : 'ru';
+        this.textContent = currentLang === 'ru' ? 'EN / RU' : 'RU / EN';
+        applyTranslations(currentLang);
+        
+        renderModels(currentCategory, document.getElementById('searchInput').value);
+        renderPopularModels();
+        updateDebug();
+        
+        showToast('info', `${currentLang === 'ru' ? '🇷🇺 Русский' : '🇬🇧 English'}`);
     });
 
     // ============================================================
@@ -1161,15 +1479,18 @@
     const filtersContainer = document.getElementById('filtersContainer');
     const addBtn = document.createElement('button');
     addBtn.className = 'filter-chip add-btn';
-    addBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Добавить';
+    addBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Add';
+    addBtn.setAttribute('data-i18n', 'btn_upload');
     addBtn.onclick = openAddModal;
     filtersContainer.appendChild(addBtn);
 
     // ============================================================
     //  INIT
     // ============================================================
+    applyTranslations('ru');
     renderModels('all', '');
     renderPopularModels();
+    updateDebug();
     showToast('info', '👋 Добро пожаловать в Mexpanse3D!');
     console.log('🚀 Mexpanse3D инициализирован');
     console.log('📦 Моделей в памяти:', modelsData.length);
