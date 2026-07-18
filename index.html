@@ -165,7 +165,7 @@
         <a class="logo" onclick="navigateTo('home')">
             <i class="fas fa-cube"></i> Mexpanse3D
             <span class="free-badge"><i class="fas fa-check-circle"></i> 100% Free</span>
-            <span class="admin-mode-badge" id="adminBadge">🔧 Admin</span>
+            <span class="admin-mode-badge active" id="adminBadge">🔧 Admin</span>
         </a>
         <div class="nav-links">
             <a class="active" onclick="navigateTo('home')" data-page="home" data-i18n="nav_home">Главная</a>
@@ -413,7 +413,7 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
     // ============================================================
-    //  TRANSLATIONS - ПОЛНАЯ ПОДДЕРЖКА РУССКОГО И АНГЛИЙСКОГО
+    //  TRANSLATIONS
     // ============================================================
     const translations = {
         ru: {
@@ -809,7 +809,7 @@
     }
 
     // ============================================================
-    //  DATA (with localStorage) - ФИНАЛЬНАЯ ИСПРАВЛЕННАЯ ВЕРСИЯ
+    //  DATA (with localStorage)
     // ============================================================
     function getDefaultModels() {
         return [
@@ -874,17 +874,94 @@
     }
 
     // ============================================================
-    //  STATE
+    //  STATE - С СОХРАНЕНИЕМ В localStorage
     // ============================================================
-    let currentCategory = 'all';
     let isAdminMode = false;
     let subscribed = false;
     let currentPreviewModel = null;
     let scene, camera, renderer, controls;
 
     // ============================================================
+    //  ADMIN MODE - С СОХРАНЕНИЕМ СОСТОЯНИЯ
+    // ============================================================
+    const ADMIN_PASSWORD = 'Ilia2006';
+    const ADMIN_STORAGE_KEY = 'mexpanse_admin_mode';
+
+    // Функция сохранения состояния админа
+    function saveAdminState(state) {
+        try {
+            localStorage.setItem(ADMIN_STORAGE_KEY, JSON.stringify(state));
+            console.log('💾 Состояние админа сохранено:', state);
+        } catch(e) {
+            console.error('❌ Ошибка сохранения состояния админа:', e);
+        }
+    }
+
+    // Функция загрузки состояния админа
+    function loadAdminState() {
+        try {
+            const stored = localStorage.getItem(ADMIN_STORAGE_KEY);
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                if (parsed && typeof parsed === 'boolean') {
+                    console.log('✅ Состояние админа загружено:', parsed);
+                    return parsed;
+                }
+            }
+        } catch(e) {
+            console.warn('⚠️ Ошибка загрузки состояния админа:', e);
+        }
+        return false;
+    }
+
+    // Инициализация админ-режима
+    isAdminMode = loadAdminState();
+
+    // Обновляем интерфейс в зависимости от состояния
+    function updateAdminUI() {
+        const badge = document.getElementById('adminBadge');
+        const btn = document.getElementById('adminToggleBtn');
+        
+        if (isAdminMode) {
+            badge.classList.add('active');
+            btn.innerHTML = '<i class="fas fa-times"></i> Exit Admin';
+        } else {
+            badge.classList.remove('active');
+            btn.innerHTML = `<i class="fas fa-shield-alt"></i> ${translations[currentLang].btn_admin || 'Admin'}`;
+        }
+        
+        // Перерисовываем модели для отображения кнопок админа
+        renderModels(currentCategory, document.getElementById('searchInput').value);
+        renderPopularModels();
+        updateDebug();
+    }
+
+    // Обработчик кнопки админа
+    document.getElementById('adminToggleBtn').addEventListener('click', function() {
+        if (isAdminMode) {
+            // Выход из админ-режима
+            isAdminMode = false;
+            saveAdminState(false);
+            updateAdminUI();
+            showToast('info', translations[currentLang].admin_mode_off || '👋 Admin mode disabled');
+            return;
+        }
+
+        const password = prompt('Enter admin password:');
+        if (password === ADMIN_PASSWORD) {
+            isAdminMode = true;
+            saveAdminState(true);
+            updateAdminUI();
+            showToast('success', translations[currentLang].admin_mode_on || '🔓 Welcome to admin panel!');
+        } else if (password !== null) {
+            showToast('error', translations[currentLang].admin_password_error || '❌ Wrong password!');
+        }
+    });
+
+    // ============================================================
     //  RENDER HOME GRID
     // ============================================================
+    let currentCategory = 'all';
     const grid = document.getElementById('modelGrid');
 
     function renderModels(category = 'all', searchQuery = '') {
@@ -963,35 +1040,6 @@
     }
     document.getElementById('searchInput').addEventListener('keyup', (e) => {
         if (e.key === 'Enter') filterModels();
-    });
-
-    // ============================================================
-    //  ADMIN MODE
-    // ============================================================
-    const ADMIN_PASSWORD = 'Ilia2006';
-
-    document.getElementById('adminToggleBtn').addEventListener('click', function() {
-        if (isAdminMode) {
-            isAdminMode = false;
-            document.getElementById('adminBadge').classList.remove('active');
-            this.innerHTML = `<i class="fas fa-shield-alt"></i> ${translations[currentLang].btn_admin || 'Admin'}`;
-            renderModels(currentCategory, document.getElementById('searchInput').value);
-            showToast('info', translations[currentLang].admin_mode_off || '👋 Admin mode disabled');
-            updateDebug();
-            return;
-        }
-
-        const password = prompt('Enter admin password:');
-        if (password === ADMIN_PASSWORD) {
-            isAdminMode = true;
-            document.getElementById('adminBadge').classList.add('active');
-            this.innerHTML = '<i class="fas fa-times"></i> Exit Admin';
-            renderModels(currentCategory, document.getElementById('searchInput').value);
-            showToast('success', translations[currentLang].admin_mode_on || '🔓 Welcome to admin panel!');
-            updateDebug();
-        } else if (password !== null) {
-            showToast('error', translations[currentLang].admin_password_error || '❌ Wrong password!');
-        }
     });
 
     // ============================================================
@@ -1174,7 +1222,7 @@
     });
 
     // ============================================================
-    //  УДАЛЕНИЕ МОДЕЛИ - ФИНАЛЬНАЯ ИСПРАВЛЕННАЯ ВЕРСИЯ
+    //  УДАЛЕНИЕ МОДЕЛИ
     // ============================================================
     function deleteModel(id) {
         if (!isAdminMode) {
@@ -1189,18 +1237,14 @@
         console.log('🗑️ Удаление модели ID:', id);
         console.log('📦 Моделей ДО удаления:', modelsData.length);
 
-        // Удаляем модель из массива
         modelsData = modelsData.filter(m => m.id !== id);
         
         console.log('📦 Моделей ПОСЛЕ удаления:', modelsData.length);
 
-        // СОХРАНЯЕМ В localStorage
         saveModels(modelsData);
         
-        // Обновляем nextId
         nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
         
-        // Перерисовываем
         renderModels(currentCategory, document.getElementById('searchInput').value);
         renderPopularModels();
         
@@ -1215,9 +1259,12 @@
     function clearAllData() {
         if (confirm('⚠️ ' + (translations[currentLang].model_delete_confirm || 'Delete all data? This cannot be undone!'))) {
             localStorage.removeItem('mexpanse_models');
+            localStorage.removeItem(ADMIN_STORAGE_KEY);
             modelsData = getDefaultModels();
             saveModels(modelsData);
             nextId = modelsData.length > 0 ? Math.max(...modelsData.map(m => m.id)) + 1 : 1;
+            isAdminMode = false;
+            updateAdminUI();
             renderModels(currentCategory, '');
             renderPopularModels();
             showToast('success', translations[currentLang].data_reset || '🗑️ All data has been reset!');
@@ -1227,7 +1274,7 @@
     }
 
     // ============================================================
-    //  ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ ИЗ localStorage
+    //  ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ
     // ============================================================
     function forceReload() {
         const stored = localStorage.getItem('mexpanse_models');
@@ -1488,13 +1535,21 @@
     //  INIT
     // ============================================================
     applyTranslations('ru');
+    updateAdminUI(); // Восстанавливаем состояние админа
     renderModels('all', '');
     renderPopularModels();
     updateDebug();
-    showToast('info', '👋 Добро пожаловать в Mexpanse3D!');
+    
+    if (isAdminMode) {
+        showToast('success', '🔓 Вы вошли как администратор!');
+    } else {
+        showToast('info', '👋 Добро пожаловать в Mexpanse3D!');
+    }
+    
     console.log('🚀 Mexpanse3D инициализирован');
     console.log('📦 Моделей в памяти:', modelsData.length);
     console.log('💾 Моделей в localStorage:', JSON.parse(localStorage.getItem('mexpanse_models') || '[]').length);
+    console.log('🔑 Режим админа:', isAdminMode ? 'Включен' : 'Выключен');
 
     document.querySelectorAll('.modal-overlay').forEach(modal => {
         modal.addEventListener('click', function(e) {
